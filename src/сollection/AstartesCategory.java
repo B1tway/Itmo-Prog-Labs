@@ -1,4 +1,4 @@
-package Collection;
+package сollection;
 
 public enum AstartesCategory {
     DREADNOUGHT,
@@ -7,3 +7,4 @@ public enum AstartesCategory {
     LIBRARIAN,
     APOTHECARY;
 }
+

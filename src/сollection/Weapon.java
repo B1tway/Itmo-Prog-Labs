@@ -1,4 +1,4 @@
-package Collection;
+package сollection;
 
 public enum Weapon {
     COMBI_PLASMA_GUN,

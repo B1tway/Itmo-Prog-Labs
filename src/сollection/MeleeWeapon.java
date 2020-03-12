@@ -1,4 +1,4 @@
-package Collection;
+package сollection;
 
 public enum MeleeWeapon {
     CHAIN_AXE,
