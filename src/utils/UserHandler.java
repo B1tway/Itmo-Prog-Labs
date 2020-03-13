@@ -19,6 +19,12 @@ public class UserHandler {
     private CSVLoader csvLoader;
     private SpaceManager spaceManager;
     private boolean interactive = true;
+    private int stackSize = 1000;
+    int stackCount = 0;
+
+    public void setInteractive(boolean interactive) {
+        this.interactive = interactive;
+    }
 
     public UserHandler() {
         this.scanner = new Scanner(System.in);
@@ -31,7 +37,7 @@ public class UserHandler {
     }
 
     public boolean nextCommand() throws IOException {
-        write(">> ");
+        if (interactive) write(">> ");
         var args = readCommand();
         String cmd = args[0];
         if (cmd.equals("exit")) return false;
@@ -251,5 +257,31 @@ public class UserHandler {
         } catch (IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public void setScanner(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public Scanner getScanner() {
+        return scanner;
+    }
+
+    public int getStackCount() {
+        return stackCount;
+    }
+
+    public int getStackSize() {
+        return stackSize;
+    }
+
+    public void setStackCount(int stackCount) {
+        this.stackCount = stackCount;
+    }
+    public void upStackCount() {
+        stackCount++;
+    }
+    public void downStackCount() {
+        stackCount--;
     }
 }

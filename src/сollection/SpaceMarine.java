@@ -59,9 +59,8 @@ public class SpaceMarine implements Comparable<SpaceMarine> {
 
     public void setChapter(Chapter chapter) {
         if (chapter != null) {
-            this.chapter.downCount();
             this.chapter = chapter;
-            this.chapter.upCount();
+
         }
     }
 
@@ -167,4 +166,7 @@ public class SpaceMarine implements Comparable<SpaceMarine> {
                 health + separator + category + separator + weaponType + separator + meleeWeapon + separator + chapter.toString();
     }
 
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
 }

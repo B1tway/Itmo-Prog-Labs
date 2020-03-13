@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class FilterByCategoryCommand extends Command {
     public FilterByCategoryCommand() {
-        super("cfilter_by_category", "вывести элементы, значение поля category которых равно заданному");
+        super("filter_by_category", "вывести элементы, значение поля category которых равно заданному");
     }
 
     @Override

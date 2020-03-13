@@ -14,20 +14,28 @@ public class Parser {
     StringTokenizer stringTokenizer;
     // { name ; x , y ; health ; category; weaponType; meleeWeapon; name, world }
 
-//    public SpaceMarine parseSpaceMarine(String str) throws ParseException {
-////        String[] tokens = str.split(";");
-////        int id = Integer.parseInt(tokens[0].strip());
-////        String name = tokens[1].strip();
-////        Coordinates coordinates = parseCoordinates(tokens[2]);
-////        Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-////        Date date = (Date) formatter.parseObject(tokens[3]);
-////
-////        float health = Float.parseFloat(tokens[3]);
-////        AstartesCategory category = AstartesCategory.valueOf(tokens[4]);
-////        Weapon weapon = Weapon.valueOf(tokens[5]);
-////
-////
-////    }
+    public SpaceMarine parseSpaceMarine(String[] tokens) throws ParseException {
+        SpaceMarine marine = null;
+        try {
+            int id = Integer.parseInt(tokens[0].strip());
+            String name = tokens[1].strip();
+            Coordinates coordinates = parseCoordinates(tokens[2].strip());
+            Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = (Date) formatter.parseObject(tokens[3].strip());
+            float health = Float.parseFloat(tokens[4].strip());
+            AstartesCategory category = AstartesCategory.valueOf(tokens[5].strip());
+            Weapon weapon = Weapon.valueOf(tokens[6].strip());
+            MeleeWeapon meleeWeapon = MeleeWeapon.valueOf(tokens[7].strip());
+            Chapter chapter = parseChapter(tokens[8].strip());
+            marine = new SpaceMarine(name, coordinates, health, category, weapon, meleeWeapon, chapter);
+            marine.setCreationDate(date);
+            marine.setId(id);
+        } finally {
+            return marine;
+        }
+
+
+    }
 
     public void setStringTokenizer(StringTokenizer stringTokenizer) {
         this.stringTokenizer = stringTokenizer;
@@ -37,8 +45,8 @@ public class Parser {
     public Coordinates parseCoordinates(String str) {
         str.strip();
         String[] tokens = str.split(":");
-        long x = Long.parseLong(tokens[0]);
-        float y = Float.parseFloat(tokens[1]);
+        long x = Long.parseLong(tokens[0].strip());
+        float y = Float.parseFloat(tokens[1].strip());
         return new Coordinates(x, y);
 
     }
@@ -46,8 +54,8 @@ public class Parser {
     public Chapter parseChapter(String str) {
         str.strip();
         String[] tokens = str.split(":");
-        if (tokens[1].equals("null")) return new Chapter(tokens[0], tokens[2], Long.parseLong(tokens[3]));
-        return new Chapter(tokens[0], tokens[1], tokens[2], Long.parseLong(tokens[3]));
+        if (tokens[1].equals("null")) return new Chapter(tokens[0].strip(), tokens[2].strip(), Long.parseLong(tokens[3].strip()));
+        return new Chapter(tokens[0].strip(), tokens[1].strip(), tokens[2].strip(), Long.parseLong(tokens[3].strip()));
     }
 
     public String[] getTokens(String string) {

@@ -39,8 +39,8 @@ public class Chapter implements Comparable<Chapter> {
     }
 
     public void upCount() {
-         marinesCount++;
-         if(marinesCount > 1000) throw new ChapterOverflow("Произошло переполнение легиона");
+        marinesCount++;
+        if (marinesCount > 1000) throw new ChapterOverflow("Произошло переполнение легиона");
     }
 
     public void downCount() {
@@ -63,8 +63,7 @@ public class Chapter implements Comparable<Chapter> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Chapter chapter = (Chapter) o;
-        return marinesCount == chapter.marinesCount &&
-                Objects.equals(name, chapter.name) &&
+        return Objects.equals(name, chapter.name) &&
                 Objects.equals(parentLegion, chapter.parentLegion) &&
                 Objects.equals(world, chapter.world);
     }
@@ -78,5 +77,9 @@ public class Chapter implements Comparable<Chapter> {
     public String toString() {
         String sepator = ":";
         return name + sepator + parentLegion + sepator + marinesCount + sepator + world;
+    }
+
+    public void setMarinesCount(long marinesCount) {
+        this.marinesCount = marinesCount;
     }
 }

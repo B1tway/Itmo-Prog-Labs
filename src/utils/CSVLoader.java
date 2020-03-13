@@ -24,7 +24,7 @@ public class CSVLoader {
             }
             writer.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Файл не найден");
         }
     }
 
@@ -40,7 +40,7 @@ public class CSVLoader {
             }
             return list;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Файл не найден или поврежден");
             return list;
         }
     }
