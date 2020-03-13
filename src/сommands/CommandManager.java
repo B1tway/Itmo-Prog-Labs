@@ -31,6 +31,12 @@ public class CommandManager {
         addCommand(new ClearCommand());
         addCommand(new ShowCommand());
         addCommand(new ExitCommand());
+        addCommand(new SumOfHealthCommand());
+        addCommand(new ReplaceIfGreaterCommand());
+        addCommand(new RemoveLowerKeyCommand());
+        addCommand(new RemoveGreaterCommand());
+        addCommand(new FilterByCategoryCommand());
+        addCommand(new CountGreaterThanWeaponTypeCommand());
     }
 
     public Command getCommand(String cmdName) {

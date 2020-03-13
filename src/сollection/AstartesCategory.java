@@ -6,5 +6,10 @@ public enum AstartesCategory {
     TERMINATOR,
     LIBRARIAN,
     APOTHECARY;
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
 

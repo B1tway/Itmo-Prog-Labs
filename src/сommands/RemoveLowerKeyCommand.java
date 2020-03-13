@@ -5,11 +5,10 @@ import сollection.SpaceMarine;
 
 import java.io.IOException;
 
-public class RemoveKeyCommand extends Command {
-    public RemoveKeyCommand() {
-        super("remove_key"," удалить из коллекции все элементы, ключ которых меньше, чем заданный");
+public class RemoveLowerKeyCommand extends Command {
+    public RemoveLowerKeyCommand() {
+        super("remove_lower_key","удалить из коллекции все элементы, ключ которых меньше, чем заданный");
     }
-
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager sm = getCollectionManager();
@@ -21,7 +20,7 @@ public class RemoveKeyCommand extends Command {
             return false;
         }
 
-        sm.remove(key);
+        sm.removeLowerKey(key);
         return true;
     }
 }

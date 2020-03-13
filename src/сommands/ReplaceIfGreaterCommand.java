@@ -5,9 +5,9 @@ import сollection.SpaceMarine;
 
 import java.io.IOException;
 
-public class RemoveKeyCommand extends Command {
-    public RemoveKeyCommand() {
-        super("remove_key"," удалить из коллекции все элементы, ключ которых меньше, чем заданный");
+public class ReplaceIfGreaterCommand extends Command {
+    public ReplaceIfGreaterCommand() {
+        super("replace_if_greater","заменить значение по ключу, если новое значение больше старого");
     }
 
     @Override
@@ -21,7 +21,9 @@ public class RemoveKeyCommand extends Command {
             return false;
         }
 
-        sm.remove(key);
+        SpaceMarine spaceMarine = sm.getUserHandler().readSpaceMarine();
+        sm.replaceIfGreaterThan(key,spaceMarine);
         return true;
     }
+
 }

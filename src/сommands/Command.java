@@ -1,5 +1,6 @@
 package сommands;
 
+import utils.UserHandler;
 import сollection.SpaceManager;
 
 import java.io.IOException;
@@ -21,7 +22,9 @@ public abstract class Command {
     public SpaceManager getCollectionManager() {
         return getCmdManager().getUserHandler().getSpaceManager();
     }
-
+    public UserHandler getUserHandler() {
+        return getCmdManager().getUserHandler();
+    }
     public void setCmdManager(CommandManager cmdManager) {
         this.cmdManager = cmdManager;
     }

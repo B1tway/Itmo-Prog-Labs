@@ -1,5 +1,7 @@
 package сollection;
 
+import exceptions.ChapterOverflow;
+
 import java.util.Objects;
 
 public class Chapter implements Comparable<Chapter> {
@@ -8,28 +10,37 @@ public class Chapter implements Comparable<Chapter> {
     private long marinesCount; //Значение поля должно быть больше 0, Максимальное значение поля: 1000
     private String world; //Поле может быть null
 
+    public Chapter(String name) {
+        this.name = name;
+    }
+
     public Chapter(String name, String world) {
         this.name = name;
         this.marinesCount = 0;
         upCount();
         this.world = world;
     }
+
     public Chapter(String name, String world, long marinesCount) {
         this.name = name;
         this.marinesCount = marinesCount;
         this.world = world;
     }
-    public Chapter(String name, String world, String parentLegion) {
+
+    public Chapter(String name, String parentLegion, String world) {
         this(name, world);
         this.parentLegion = parentLegion;
     }
+
     public Chapter(String name, String world, String parentLegion, long marinesCount) {
         this(name, world);
         this.parentLegion = parentLegion;
         this.marinesCount = marinesCount;
     }
+
     public void upCount() {
-        marinesCount++;
+         marinesCount++;
+         if(marinesCount > 1000) throw new ChapterOverflow("Произошло переполнение легиона");
     }
 
     public void downCount() {

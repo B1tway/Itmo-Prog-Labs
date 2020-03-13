@@ -1,6 +1,7 @@
 package сollection;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class Coordinates {
     private Long x; //Поле не может быть null
@@ -35,4 +36,6 @@ public class Coordinates {
         String separator = " : ";
         return x + separator + y;
     }
+
+
 }

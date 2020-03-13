@@ -4,6 +4,7 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Scanner;
 
 public class SpaceMarine implements Comparable<SpaceMarine> {
@@ -165,4 +166,5 @@ public class SpaceMarine implements Comparable<SpaceMarine> {
         return id + separator + name + separator + coordinates.toString() + separator + formatter.format(creationDate) + separator +
                 health + separator + category + separator + weaponType + separator + meleeWeapon + separator + chapter.toString();
     }
+
 }
