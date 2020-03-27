@@ -3,8 +3,14 @@ package сommands;
 import java.io.IOException;
 import java.io.StringReader;
 
+/**
+ * The type Help command.
+ */
 public class HelpCommand extends Command {
 
+    /**
+     * Instantiates a new Help command.
+     */
     public HelpCommand() {
         super("help", "вывести справку по доступным командам");
     }
@@ -12,7 +18,7 @@ public class HelpCommand extends Command {
 
     @Override
     public boolean execute(String[] args) throws IOException {
-        var cmdManager = getCmdManager();
+        CommandManager cmdManager = getCmdManager();
         Object[] commands = cmdManager.getCommands();
         for (int i = 0; i < commands.length; i++) {
             Command current = (Command) commands[i];

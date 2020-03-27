@@ -1,14 +1,22 @@
 package сommands;
 
+import сollection.SpaceManager;
+
 import java.io.IOException;
 
+/**
+ * The type Clear command.
+ */
 public class ClearCommand extends Command {
+    /**
+     * Instantiates a new Clear command.
+     */
     public ClearCommand() {
         super("clear","очистить коллекцию");
     }
     @Override
     public boolean execute(String[] args) throws IOException {
-        var spaceManager = getCollectionManager();
+        SpaceManager spaceManager = getCollectionManager();
         spaceManager.clear();
         return true;
     }

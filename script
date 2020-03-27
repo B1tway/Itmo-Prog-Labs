@@ -1,1 +1,4 @@
-execute_script script
+show
+remove_lower_key 3
+execute_script script1
+info show

@@ -5,7 +5,13 @@ import сollection.SpaceMarine;
 
 import java.io.IOException;
 
+/**
+ * The type Remove lower key command.
+ */
 public class RemoveLowerKeyCommand extends Command {
+    /**
+     * Instantiates a new Remove lower key command.
+     */
     public RemoveLowerKeyCommand() {
         super("remove_lower_key","удалить из коллекции все элементы, ключ которых меньше, чем заданный");
     }
@@ -17,10 +23,10 @@ public class RemoveLowerKeyCommand extends Command {
             key = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
             System.out.println("Неверные параметры, введите ключ");
-            return false;
+            return true;
         }
 
-        sm.removeLowerKey(key);
-        return true;
+        return sm.removeLowerKey(key);
+
     }
 }

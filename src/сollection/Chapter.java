@@ -3,51 +3,33 @@ package сollection;
 import exceptions.ChapterOverflow;
 
 import java.util.Objects;
+import java.util.function.IntBinaryOperator;
 
+/**
+ * The type Chapter.
+ */
 public class Chapter implements Comparable<Chapter> {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private String parentLegion;
-    private long marinesCount; //Значение поля должно быть больше 0, Максимальное значение поля: 1000
+    private Integer  marinesCount; //Поле может быть null
     private String world; //Поле может быть null
 
-    public Chapter(String name) {
+    public Chapter(String name, String parentLegion, String world, Integer marinesCount) {
         this.name = name;
-    }
-
-    public Chapter(String name, String world) {
-        this.name = name;
-        this.marinesCount = 0;
-        upCount();
-        this.world = world;
-    }
-
-    public Chapter(String name, String world, long marinesCount) {
-        this.name = name;
-        this.marinesCount = marinesCount;
-        this.world = world;
-    }
-
-    public Chapter(String name, String parentLegion, String world) {
-        this(name, world);
         this.parentLegion = parentLegion;
-    }
-
-    public Chapter(String name, String world, String parentLegion, long marinesCount) {
-        this(name, world);
-        this.parentLegion = parentLegion;
+        this.world = world;
         this.marinesCount = marinesCount;
     }
 
-    public void upCount() {
-        marinesCount++;
-        if (marinesCount > 1000) throw new ChapterOverflow("Произошло переполнение легиона");
-    }
 
-    public void downCount() {
-        marinesCount--;
-    }
 
-    public long getCount() {
+
+    /**
+     * Gets count.
+     *
+     * @return the count
+     */
+    public Integer getCount() {
         return marinesCount;
     }
 
@@ -76,10 +58,9 @@ public class Chapter implements Comparable<Chapter> {
     @Override
     public String toString() {
         String sepator = ":";
-        return name + sepator + parentLegion + sepator + marinesCount + sepator + world;
+        String cnt = ((marinesCount == null || marinesCount == 0 ))? null : marinesCount.toString();
+        return name + sepator + parentLegion + sepator + world + sepator + cnt;
     }
 
-    public void setMarinesCount(long marinesCount) {
-        this.marinesCount = marinesCount;
-    }
+
 }

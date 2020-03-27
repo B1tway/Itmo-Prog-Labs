@@ -5,7 +5,13 @@ import сollection.SpaceMarine;
 
 import java.io.IOException;
 
+/**
+ * The type Replace if greater command.
+ */
 public class ReplaceIfGreaterCommand extends Command {
+    /**
+     * Instantiates a new Replace if greater command.
+     */
     public ReplaceIfGreaterCommand() {
         super("replace_if_greater","заменить значение по ключу, если новое значение больше старого");
     }
@@ -18,7 +24,7 @@ public class ReplaceIfGreaterCommand extends Command {
             key = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
             System.out.println("Неверные параметры, введите ключ");
-            return false;
+            return true;
         }
 
         SpaceMarine spaceMarine = sm.getUserHandler().readSpaceMarine();

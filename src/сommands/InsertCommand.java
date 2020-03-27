@@ -5,7 +5,13 @@ import сollection.SpaceMarine;
 
 import java.io.IOException;
 
+/**
+ * The type Insert command.
+ */
 public class InsertCommand extends Command {
+    /**
+     * Instantiates a new Insert command.
+     */
     public InsertCommand() {
         super("insert", "добавить новый элемент с заданным ключом");
     }
@@ -19,11 +25,16 @@ public class InsertCommand extends Command {
             key = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
             System.out.println("Неверные параметры, введите ключ");
-            return false;
+            return true;
         }
-
+        if (sm.contains(key)) {
+            System.out.println("Элемент с таким ключем уже содержится");
+            return true;
+        }
         SpaceMarine spaceMarine = sm.getUserHandler().readSpaceMarine();
+
         sm.insert(key, spaceMarine);
+
         return true;
     }
 }

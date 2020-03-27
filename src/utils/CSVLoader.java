@@ -5,13 +5,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Класс, работающий с csv.
+ */
 public class CSVLoader {
+    /**
+     * The File name.
+     */
     String fileName;
 
+    /**
+     * Instantiates a new Csv loader.
+     *
+     * @param filename the filename
+     */
     public CSVLoader(String filename) {
         this.fileName = filename;
     }
 
+    /**
+     * Write to csv file.
+     *
+     * @param thingsToWrite the things to write
+     * @param separator     the separator
+     */
     public void writeToCsvFile(List<String[]> thingsToWrite, String separator) {
         try (PrintWriter writer = new PrintWriter(fileName)) {
             for (String[] strings : thingsToWrite) {
@@ -28,6 +45,12 @@ public class CSVLoader {
         }
     }
 
+    /**
+     * Read from csv file list.
+     *
+     * @param separator the separator
+     * @return the list
+     */
     public List<String[]> readFromCsvFile(String separator) {
         List<String[]> list = new ArrayList<>();
         try (Scanner reader = new Scanner(new FileReader(fileName))) {
@@ -40,7 +63,7 @@ public class CSVLoader {
             }
             return list;
         } catch (IOException e) {
-            System.out.println("Файл не найден или поврежден");
+            System.out.println("Некорректные данные в файле");
             return list;
         }
     }

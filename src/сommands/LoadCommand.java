@@ -6,16 +6,27 @@ import сollection.SpaceManager;
 import сollection.SpaceMarine;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
+/**
+ * The type Load command.
+ */
 public class LoadCommand extends Command {
+    /**
+     * Instantiates a new Load command.
+     */
     public LoadCommand() {
         super("load", "загружает коллекцию из файла");
     }
@@ -23,21 +34,77 @@ public class LoadCommand extends Command {
 
     @Override
     public boolean execute(String[] args) throws IOException {
-        String filename = "data.csv";
+        String filename = null;
+
+        filename = System.getenv("INPUT_PATH");
+        if (filename == null) {
+            System.out.println("Переменная не найдена");
+            System.exit(0);
+        }
+        Path path = Paths.get(filename);
+        if (!(new File(String.valueOf(path)).isFile())) {
+            System.out.println("Файл не существует");
+            System.exit(0);
+        }
+        if (!(Files.isReadable(path) && Files.isWritable(path))) {
+            System.out.println("Ошибка прав");
+            System.exit(0);
+        }
+
+
         Parser parser = new Parser();
         CSVLoader csvLoader = new CSVLoader(filename);
-        var list = csvLoader.readFromCsvFile("_:kek:_");
+        List<String[]> list = csvLoader.readFromCsvFile("_:kek:_");
         String source = "";
-        var spaceManager = getUserHandler().getSpaceManager();
+        SpaceManager spaceManager = getUserHandler().getSpaceManager();
         spaceManager.clear();
+        int cnt = 0;
         for (String[] strings : list) {
+            boolean incorrect = false;
             try {
                 SpaceMarine marine = (parser.parseSpaceMarine(strings));
+                if (marine.getId() <= 0) {
+                    System.out.println("Некорректный id");
+                    incorrect = true;
+                    continue;
+                }
+                if ( marine.getChapter().getCount() != null && (marine.getChapter().getCount() < 0 || marine.getChapter().getCount() > 1000)) {
+                    System.out.println("Некорректный marineCount");
+                    incorrect = true;
+                    continue;
+                }
+                if (marine.getHealth() < 0) {
+                    System.out.println("Некорректный health");
+                    cnt++;
+                    continue;
+                }
+                if (spaceManager.contains(strings[strings.length - 1])) {
+                    System.out.println("Элемент с таким ключем уже был добавлен");
+                    cnt++;
+                    continue;
+                }
+                if (spaceManager.containsId(marine.getId())) {
+                    System.out.println("Элемент с таким id уже был добавлен");
+                    cnt++;
+                    continue;
+                }
+                if (marine.getWeaponType() == null) {
+                    System.out.println("WeaponType не может быть равен null");
+                }
+                if (marine.getMeleeWeapon() == null) {
+                    System.out.println("MeleeWeaponType не может быть равен null");
+                }
                 spaceManager.insert(strings[strings.length - 1], marine);
 
             } catch (Exception e) {
-                System.out.println("Файл поврежден или не найден");
+                System.out.println("Некорректное содержание файла");
+                cnt++;
             }
+
+        }
+        System.out.println("Коллекция загружена из файла");
+        if (cnt > 0) {
+            System.out.println("Не было загружено " + cnt + " обьектов");
         }
         return true;
     }

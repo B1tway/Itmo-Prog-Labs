@@ -4,14 +4,17 @@ import exceptions.InvalidInputException;
 import сollection.*;
 import сommands.CommandManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Array;
 import java.nio.file.LinkOption;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
+/**
+ * The type User handler.
+ */
 public class UserHandler {
     private CommandManager cmdManeger;
     private Scanner scanner;
@@ -20,12 +23,24 @@ public class UserHandler {
     private SpaceManager spaceManager;
     private boolean interactive = true;
     private int stackSize = 1000;
+    private Set<String> files;
+    /**
+     * The Stack count.
+     */
     int stackCount = 0;
 
+    /**
+     * Sets interactive.
+     *
+     * @param interactive the interactive
+     */
     public void setInteractive(boolean interactive) {
         this.interactive = interactive;
     }
 
+    /**
+     * Instantiates a new User handler.
+     */
     public UserHandler() {
         this.scanner = new Scanner(System.in);
         this.printWriter = new PrintWriter(System.out);
@@ -34,31 +49,77 @@ public class UserHandler {
         cmdManeger.setUserHandler(this);
         this.spaceManager = new SpaceManager();
         spaceManager.setUserHandler(this);
+        this.files = new HashSet<>();
     }
 
+    /**
+     * Next command boolean.
+     *
+     * @return the boolean
+     * @throws IOException the io exception
+     */
     public boolean nextCommand() throws IOException {
         if (interactive) write(">> ");
-        var args = readCommand();
+        String[] args = readCommand();
+        if(args.length == 0) return true;
         String cmd = args[0];
-        if (cmd.equals("exit")) return false;
         args = Arrays.copyOfRange(args, 1, args.length);
-        cmdManeger.executeCommand(cmd, args);
-        return true;
+        return cmdManeger.executeCommand(cmd, args);
+
     }
 
+    public Set<String> getFiles() {
+        return files;
+    }
+
+    /**
+     * Read command string [ ].
+     *
+     * @return the string [ ]
+     */
     public String[] readCommand() {
-        return scanner.nextLine().split(" ");
+        List<String> list = new ArrayList<>();
+        String str = null;
+        StringTokenizer st = null;
+        try {
+            str = scanner.nextLine();
+            st = new StringTokenizer(str);
+
+        } catch (NoSuchElementException exp) {
+            System.out.println("Bye bye");
+            System.exit(0);
+
+        }
+
+        while (st.hasMoreTokens()) list.add(st.nextToken());
+        String[] args = list.toArray(new String[list.size()]);
+        return args;
 
     }
 
+    /**
+     * Gets cmd maneger.
+     *
+     * @return the cmd maneger
+     */
     public CommandManager getCmdManeger() {
         return cmdManeger;
     }
 
+    /**
+     * Gets space manager.
+     *
+     * @return the space manager
+     */
     public SpaceManager getSpaceManager() {
         return spaceManager;
     }
 
+    /**
+     * Read space marine space marine.
+     *
+     * @return the space marine
+     */
     public SpaceMarine readSpaceMarine() {
         writeln("Введите SpaceMarine");
         String name = readLineWithMessage("Введите name", false);
@@ -72,19 +133,29 @@ public class UserHandler {
 
     }
 
+    /**
+     * Read category astartes category.
+     *
+     * @return the astartes category
+     */
     public AstartesCategory readCategory() {
         AstartesCategory result = null;
         writeln("Введите AstartesCategory");
         String input = null;
         do {
             writeln("DREADNOUGHT, INCEPTOR, TERMINATOR, LIBRARIAN, APOTHECARY");
-            input = readLineWithMessage("Введите одну из категорий", false);
+            input = readLineWithMessage("Введите одну из категорий", true);
             if (isCategory(input)) result = AstartesCategory.valueOf(input);
 
-        } while (!isCategory(input));
+        } while (!isCategory(input) && !(input == null)) ;
         return result;
     }
 
+    /**
+     * Read weapon weapon.
+     *
+     * @return the weapon
+     */
     public Weapon readWeapon() {
         Weapon result = null;
         writeln("Введите Weapon");
@@ -98,6 +169,11 @@ public class UserHandler {
         return result;
     }
 
+    /**
+     * Read melee weapon melee weapon.
+     *
+     * @return the melee weapon
+     */
     public MeleeWeapon readMeleeWeapon() {
         MeleeWeapon result = null;
         writeln("Введите MeleeWeapon");
@@ -111,14 +187,34 @@ public class UserHandler {
         return result;
     }
 
+    /**
+     * Read chapter chapter.
+     *
+     * @return the chapter
+     */
     public Chapter readChapter() {
         writeln("Введите Chapter");
         String name = readLineWithMessage("Введите name", false);
         String parentLegion = readLineWithMessage("Введите parentLegion", true);
         String world = readLineWithMessage("Введите world", true);
-        return new Chapter(name, parentLegion, world);
+        Integer marineCount = -1;
+        while (!(marineCount < 1001 && marineCount > 0)) {
+            String s = readLineWithMessage("Введите marinesCount от 1 до 1000", true);
+            if(s == null) {
+                marineCount = null;
+                break;
+            }
+            if(!isInteger(s)) continue;
+            marineCount = Integer.parseInt(s);
+        }
+        return new Chapter(name, parentLegion, world, marineCount);
     }
 
+    /**
+     * Read health float.
+     *
+     * @return the float
+     */
     public float readHealth() {
         float result = 0;
         do {
@@ -128,13 +224,25 @@ public class UserHandler {
         return result;
     }
 
+    /**
+     * Read coordinates coordinates.
+     *
+     * @return the coordinates
+     */
     public Coordinates readCoordinates() {
         writeln("Введите Coordinates");
         long x = readLong("Введите x", false);
-        float y = readFloat("Введите y", true);
+        Long y = readLong("Введите y", false);
         return new Coordinates(x, y);
     }
 
+    /**
+     * Read long long.
+     *
+     * @param message  the message
+     * @param nullable the nullable
+     * @return the long
+     */
     public long readLong(String message, boolean nullable) {
         long result = 0;
         String input = null;
@@ -147,6 +255,13 @@ public class UserHandler {
         return result;
     }
 
+    /**
+     * Read float float.
+     *
+     * @param message  the message
+     * @param nullable the nullable
+     * @return the float
+     */
     public float readFloat(String message, boolean nullable) {
         float result = 0;
         String input = null;
@@ -160,6 +275,13 @@ public class UserHandler {
     }
 
 
+    /**
+     * Read line with message string.
+     *
+     * @param message  the message
+     * @param nullable the nullable
+     * @return the string
+     */
     public String readLineWithMessage(String message, boolean nullable) {
         String result = "";
         do {
@@ -169,7 +291,14 @@ public class UserHandler {
             if (interactive) {
                 writeln(message);
             }
-            result = scanner.nextLine();
+            try {
+                result = scanner.nextLine();
+
+            } catch (NoSuchElementException exp) {
+                System.out.println("Bye bye");
+                System.exit(0);
+
+            }
             result = result.isEmpty() ? null : result;
         } while (interactive && !nullable && result == null);
         if (!interactive && result == null) {
@@ -178,6 +307,13 @@ public class UserHandler {
         return result;
     }
 
+    /**
+     * Read with message string.
+     *
+     * @param message  the message
+     * @param nullable the nullable
+     * @return the string
+     */
     public String readWithMessage(String message, boolean nullable) {
         String result = "";
         do {
@@ -196,15 +332,41 @@ public class UserHandler {
         return result;
     }
 
+    /**
+     * Writeln.
+     *
+     * @param message the message
+     */
     public void writeln(String message) {
         write(message + "\n");
     }
 
+    /**
+     * Write.
+     *
+     * @param message the message
+     */
     public void write(String message) {
         printWriter.write(message);
         printWriter.flush();
     }
+    public int readInt(String message, boolean nullable) {
+        int result = 0;
+        String input = null;
+        do {
+            input = readLineWithMessage(message, nullable);
+            if (input == null && nullable) return result;
+            if (isInteger(input)) result = Integer.parseInt(input);
 
+        } while (!isFloat(input));
+        return result;
+    }
+    /**
+     * Is integer boolean.
+     *
+     * @param string the string
+     * @return the boolean
+     */
     public boolean isInteger(String string) {
         try {
             Integer.valueOf(string);
@@ -214,6 +376,12 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Is long boolean.
+     *
+     * @param string the string
+     * @return the boolean
+     */
     public boolean isLong(String string) {
         try {
             Long.valueOf(string);
@@ -223,6 +391,12 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Is float boolean.
+     *
+     * @param string the string
+     * @return the boolean
+     */
     public boolean isFloat(String string) {
         try {
             Float.valueOf(string);
@@ -232,15 +406,27 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Is category boolean.
+     *
+     * @param string the string
+     * @return the boolean
+     */
     public boolean isCategory(String string) {
         try {
             AstartesCategory.valueOf(string);
             return true;
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             return false;
         }
     }
 
+    /**
+     * Is weapon boolean.
+     *
+     * @param string the string
+     * @return the boolean
+     */
     public boolean isWeapon(String string) {
         try {
             Weapon.valueOf(string);
@@ -250,6 +436,12 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Is melee weapon boolean.
+     *
+     * @param string the string
+     * @return the boolean
+     */
     public boolean isMeleeWeapon(String string) {
         try {
             MeleeWeapon.valueOf(string);
@@ -259,28 +451,61 @@ public class UserHandler {
         }
     }
 
+    /**
+     * Sets scanner.
+     *
+     * @param scanner the scanner
+     */
     public void setScanner(Scanner scanner) {
         this.scanner = scanner;
     }
 
+    /**
+     * Gets scanner.
+     *
+     * @return the scanner
+     */
     public Scanner getScanner() {
         return scanner;
     }
 
+    /**
+     * Gets stack count.
+     *
+     * @return the stack count
+     */
     public int getStackCount() {
         return stackCount;
     }
 
+    /**
+     * Gets stack size.
+     *
+     * @return the stack size
+     */
     public int getStackSize() {
         return stackSize;
     }
 
+    /**
+     * Sets stack count.
+     *
+     * @param stackCount the stack count
+     */
     public void setStackCount(int stackCount) {
         this.stackCount = stackCount;
     }
+
+    /**
+     * Up stack count.
+     */
     public void upStackCount() {
         stackCount++;
     }
+
+    /**
+     * Down stack count.
+     */
     public void downStackCount() {
         stackCount--;
     }

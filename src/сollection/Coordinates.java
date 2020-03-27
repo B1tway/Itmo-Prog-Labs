@@ -3,15 +3,29 @@ package сollection;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * The type Coordinates.
+ */
 public class Coordinates {
-    private Long x; //Поле не может быть null
-    private float y;
+    private long x;
+    private Long y; //Поле не может быть null
 
+    /**
+     * Instantiates a new Coordinates.
+     *
+     * @param x the x
+     */
     public Coordinates(Long x) {
         this.x = x;
     }
 
-    public Coordinates(Long x, float y) {
+    /**
+     * Instantiates a new Coordinates.
+     *
+     * @param x the x
+     * @param y the y
+     */
+    public Coordinates(long x, Long y) {
         this.x = x;
         this.y = y;
 

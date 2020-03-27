@@ -5,7 +5,13 @@ import сollection.SpaceMarine;
 
 import java.io.IOException;
 
+/**
+ * The type Remove key command.
+ */
 public class RemoveKeyCommand extends Command {
+    /**
+     * Instantiates a new Remove key command.
+     */
     public RemoveKeyCommand() {
         super("remove_key"," удалить из коллекции все элементы, ключ которых меньше, чем заданный");
     }
@@ -18,9 +24,10 @@ public class RemoveKeyCommand extends Command {
             key = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
             System.out.println("Неверные параметры, введите ключ");
-            return false;
+            return true;
         }
-
+        if(sm.contains(key)) System.out.println("Элемент удален успешно");
+        else System.out.println("Элемент с таким ключем не существует");
         sm.remove(key);
         return true;
     }
