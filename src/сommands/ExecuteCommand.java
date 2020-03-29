@@ -36,20 +36,23 @@ public class ExecuteCommand extends Command {
             fileName = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
             uh.writeln("Введите имя файла");
+            uh.setInteractive(true);
             return false;
         }
 
         try {
             Scanner old = uh.getScanner();
-            if (files.contains(fileName)) {
-                System.out.println("Возникла зависимость");
-            }
+//            if (files.contains(fileName)) {
+//                System.out.println("Возникла зависимость");
+//            return true;
+//            }
             files.add(fileName);
             uh.setScanner(new Scanner(new File(fileName)));
             while (uh.getScanner().hasNextLine()) {
                 if (!uh.nextCommand()) break;
             }
             uh.setScanner(old);
+            System.out.println("Закончился скрипт " + fileName);
         } catch (Exception exp) {
             System.out.println("Файл не найден или недоступен");
         }
