@@ -1,5 +1,6 @@
 package сollection;
 
+import java.io.Serializable;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
