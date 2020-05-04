@@ -1,12 +1,13 @@
 package сollection;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
 
 /**
  * The type Coordinates.
  */
-public class Coordinates {
+public class Coordinates implements Serializable {
     private long x;
     private Long y; //Поле не может быть null
 

@@ -1,7 +1,7 @@
 package сommands;
 
 
-import utils.UserHandler;
+import utils.Handler;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -11,15 +11,15 @@ import java.util.HashMap;
  */
 public class CommandManager {
     private HashMap<String, Command> commands;
-    private UserHandler userHandler;
+    private Handler handler;
 
     /**
      * Gets user handler.
      *
      * @return the user handler
      */
-    public UserHandler getUserHandler() {
-        return userHandler;
+    public Handler getHandler() {
+        return handler;
     }
 
     private void addCommand(Command command) {
@@ -60,9 +60,19 @@ public class CommandManager {
      */
     public Command getCommand(String cmdName) {
         for (Command cmd : commands.values()) {
-            if (cmd.getCommandName().equals(cmdName)) return cmd;
+            if (cmd.getCommandName().equals(cmdName)) {
+                cmd.args = new String[0];
+                return cmd;
+            }
         }
         return new EmptyCommand();
+    }
+
+    public Command getCommand(String cmdName, String[] args) {
+        Command cmd = getCommand(cmdName);
+        cmd.args = args;
+        cmd.readArgs();
+        return cmd;
     }
 
     /**
@@ -73,7 +83,7 @@ public class CommandManager {
      * @throws IOException the io exception
      */
     public boolean executeCommand(String cmdName, String[] args) throws IOException {
-       return getCommand(cmdName).execute(args);
+        return getCommand(cmdName).execute(args);
     }
 
     /**
@@ -88,10 +98,10 @@ public class CommandManager {
     /**
      * Sets user handler.
      *
-     * @param userHandler the user handler
+     * @param handler the user handler
      */
-    public void setUserHandler(UserHandler userHandler) {
-        this.userHandler = userHandler;
+    public void setHandler(Handler handler) {
+        this.handler = handler;
     }
 
 }

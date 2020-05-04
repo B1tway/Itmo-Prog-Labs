@@ -2,20 +2,18 @@ package utils;
 
 import exceptions.InvalidInputException;
 import сollection.*;
+import сommands.Command;
 import сommands.CommandManager;
+import сommands.EmptyCommand;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Array;
-import java.nio.file.LinkOption;
-import java.text.ParseException;
 import java.util.*;
 
 /**
  * The type User handler.
  */
-public class UserHandler {
+public class Handler {
     private CommandManager cmdManeger;
     private Scanner scanner;
     private PrintWriter printWriter;
@@ -41,14 +39,14 @@ public class UserHandler {
     /**
      * Instantiates a new User handler.
      */
-    public UserHandler() {
+    public Handler() {
         this.scanner = new Scanner(System.in);
         this.printWriter = new PrintWriter(System.out);
         this.cmdManeger = new CommandManager();
         this.csvLoader = new CSVLoader("data.csv");
-        cmdManeger.setUserHandler(this);
+        cmdManeger.setHandler(this);
         this.spaceManager = new SpaceManager();
-        spaceManager.setUserHandler(this);
+        spaceManager.setHandler(this);
         this.files = new HashSet<>();
     }
 
@@ -58,14 +56,23 @@ public class UserHandler {
      * @return the boolean
      * @throws IOException the io exception
      */
-    public boolean nextCommand() throws IOException {
+    public boolean next() throws IOException {
         if (interactive) write(">> ");
         String[] args = readCommand();
-        if(args.length == 0) return true;
+        if (args.length == 0) return true;
         String cmd = args[0];
         args = Arrays.copyOfRange(args, 1, args.length);
         return cmdManeger.executeCommand(cmd, args);
 
+    }
+
+    public Command nextCommand() throws IOException {
+        if (interactive) write(">> ");
+        String[] args = readCommand();
+        if (args.length == 0) return new EmptyCommand();
+        String cmd = args[0];
+        args = Arrays.copyOfRange(args, 1, args.length);
+        return cmdManeger.getCommand(cmd, args);
     }
 
     public Set<String> getFiles() {
@@ -147,7 +154,7 @@ public class UserHandler {
             input = readLineWithMessage("Введите одну из категорий", true);
             if (isCategory(input)) result = AstartesCategory.valueOf(input);
 
-        } while (!isCategory(input) && !(input == null)) ;
+        } while (!isCategory(input) && !(input == null));
         return result;
     }
 
@@ -200,11 +207,11 @@ public class UserHandler {
         Integer marineCount = -1;
         while (!(marineCount < 1001 && marineCount > 0)) {
             String s = readLineWithMessage("Введите marinesCount от 1 до 1000", true);
-            if(s == null) {
+            if (s == null) {
                 marineCount = null;
                 break;
             }
-            if(!isInteger(s)) continue;
+            if (!isInteger(s)) continue;
             marineCount = Integer.parseInt(s);
         }
         return new Chapter(name, parentLegion, world, marineCount);
@@ -350,6 +357,7 @@ public class UserHandler {
         printWriter.write(message);
         printWriter.flush();
     }
+
     public int readInt(String message, boolean nullable) {
         int result = 0;
         String input = null;
@@ -361,6 +369,7 @@ public class UserHandler {
         } while (!isFloat(input));
         return result;
     }
+
     /**
      * Is integer boolean.
      *

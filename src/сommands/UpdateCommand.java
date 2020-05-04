@@ -35,4 +35,10 @@ public class UpdateCommand extends Command {
         System.out.println("Обьект обновлен");
         return true;
     }
+
+    @Override
+    public void readArgs() {
+        SpaceMarine marine = getUserHandler().readSpaceMarine();
+        argsObject.add(marine);
+    }
 }

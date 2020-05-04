@@ -2,13 +2,14 @@ package сollection;
 
 import exceptions.ChapterOverflow;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.IntBinaryOperator;
 
 /**
  * The type Chapter.
  */
-public class Chapter implements Comparable<Chapter> {
+public class Chapter implements Comparable<Chapter>, Serializable {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private String parentLegion;
     private Integer  marinesCount; //Поле может быть null

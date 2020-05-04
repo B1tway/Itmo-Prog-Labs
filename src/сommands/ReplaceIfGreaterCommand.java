@@ -1,5 +1,6 @@
 package сommands;
 
+import utils.Handler;
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
 
@@ -27,9 +28,14 @@ public class ReplaceIfGreaterCommand extends Command {
             return true;
         }
 
-        SpaceMarine spaceMarine = sm.getUserHandler().readSpaceMarine();
+        SpaceMarine spaceMarine = sm.getHandler().readSpaceMarine();
         sm.replaceIfGreaterThan(key,spaceMarine);
         return true;
     }
 
+    @Override
+    public void readArgs() {
+        SpaceMarine marine = getUserHandler().readSpaceMarine();
+        argsObject.add(marine);
+    }
 }

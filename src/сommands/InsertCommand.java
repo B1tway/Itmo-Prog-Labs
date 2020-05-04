@@ -31,10 +31,16 @@ public class InsertCommand extends Command {
             System.out.println("Элемент с таким ключем уже содержится");
             return true;
         }
-        SpaceMarine spaceMarine = sm.getUserHandler().readSpaceMarine();
+        SpaceMarine spaceMarine = sm.getHandler().readSpaceMarine();
 
         sm.insert(key, spaceMarine);
 
         return true;
+    }
+
+    @Override
+    public void readArgs() {
+        SpaceMarine marine = getUserHandler().readSpaceMarine();
+        argsObject.add(marine);
     }
 }

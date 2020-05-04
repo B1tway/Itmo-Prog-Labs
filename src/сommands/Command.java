@@ -1,14 +1,18 @@
 package сommands;
 
-import utils.UserHandler;
+import utils.Handler;
 import сollection.SpaceManager;
+import сollection.SpaceMarine;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type Command.
  */
-public abstract class Command {
+public abstract class Command implements Serializable {
     /**
      * The Cmd name.
      */
@@ -20,12 +24,13 @@ public abstract class Command {
     /**
      * The Help text.
      */
-    protected String helpText;
+    transient protected String helpText;
     /**
      * The Args count.
      */
     protected int argsCount = 0;
-    private CommandManager cmdManager;
+    protected List<Object> argsObject;
+    transient private CommandManager cmdManager;
 
     /**
      * Instantiates a new Command.
@@ -36,6 +41,7 @@ public abstract class Command {
     protected Command(String cmdName, String helpText) {
         this.cmdName = cmdName;
         this.helpText = helpText;
+        this.argsObject = new ArrayList<>();
     }
 
     /**
@@ -53,7 +59,7 @@ public abstract class Command {
      * @return the collection manager
      */
     public SpaceManager getCollectionManager() {
-        return getCmdManager().getUserHandler().getSpaceManager();
+        return getCmdManager().getHandler().getSpaceManager();
     }
 
     /**
@@ -61,8 +67,8 @@ public abstract class Command {
      *
      * @return the user handler
      */
-    public UserHandler getUserHandler() {
-        return getCmdManager().getUserHandler();
+    public Handler getUserHandler() {
+        return getCmdManager().getHandler();
     }
 
     /**
@@ -99,5 +105,14 @@ public abstract class Command {
      */
     public String getInfo() {
         return helpText;
+    }
+
+    public void readArgs() {
+        argsObject.clear();
+        SpaceMarine marine = getUserHandler().readSpaceMarine();
+        argsObject.add(marine);
+    }
+    public List<Object> getArgsObject() {
+        return argsObject;
     }
 }

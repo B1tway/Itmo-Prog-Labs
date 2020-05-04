@@ -21,4 +21,5 @@ public class SumOfHealthCommand extends Command {
         System.out.println("Сумма жизни всех: " + sm.sumOfHealth());
         return true;
     }
+
 }

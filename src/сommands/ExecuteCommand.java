@@ -1,11 +1,9 @@
 package сommands;
 
-import utils.UserHandler;
+import utils.Handler;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -23,7 +21,7 @@ public class ExecuteCommand extends Command {
 
     @Override
     public boolean execute(String[] args) throws IOException {
-        UserHandler uh = getUserHandler();
+        Handler uh = getUserHandler();
         uh.setInteractive(false);
         uh.upStackCount();
         Set<String> files = uh.getFiles();
@@ -49,7 +47,7 @@ public class ExecuteCommand extends Command {
             files.add(fileName);
             uh.setScanner(new Scanner(new File(fileName)));
             while (uh.getScanner().hasNextLine()) {
-                if (!uh.nextCommand()) break;
+                if (!uh.next()) break;
             }
             uh.setScanner(old);
             System.out.println("Закончился скрипт " + fileName);

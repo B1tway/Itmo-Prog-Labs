@@ -35,4 +35,10 @@ public class FilterByCategoryCommand extends Command {
         }
         return true;
     }
+
+    @Override
+    public void readArgs() {
+        AstartesCategory category = getUserHandler().readCategory();
+        argsObject.add(category);
+    }
 }

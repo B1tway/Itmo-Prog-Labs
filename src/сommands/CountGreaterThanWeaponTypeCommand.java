@@ -22,4 +22,10 @@ public class CountGreaterThanWeaponTypeCommand extends Command{
         System.out.println(sm.countGreaterThanWeapon(weapon));
         return true;
     }
+
+    @Override
+    public void readArgs() {
+        Weapon weapon = getUserHandler().readWeapon();
+        argsObject.add(weapon);
+    }
 }
