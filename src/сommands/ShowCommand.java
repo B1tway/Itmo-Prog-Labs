@@ -19,7 +19,7 @@ public class ShowCommand extends Command {
     public boolean execute(String[] args) throws IOException {
         SpaceManager sm = getCollectionManager();
         String header = " key; id; name; Coordinates; Date; health; category; weapon; meleeWeapon; Chapter;";
-        System.out.println(header);
+        getUserHandler().writeln(header);
         sm.show();
         return true;
     }

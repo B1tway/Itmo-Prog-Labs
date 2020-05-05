@@ -40,7 +40,9 @@ public class InsertCommand extends Command {
 
     @Override
     public void readArgs() {
+        argsObject.clear();
         SpaceMarine marine = getUserHandler().readSpaceMarine();
         argsObject.add(marine);
+
     }
 }

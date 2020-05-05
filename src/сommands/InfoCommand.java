@@ -18,7 +18,7 @@ public class InfoCommand extends Command {
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager sp = getCollectionManager();
-        System.out.println(sp.info());
+        getUserHandler().writeln(sp.info());
         return true;
     }
 }

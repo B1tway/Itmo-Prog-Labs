@@ -1,5 +1,6 @@
+import network.client.Client;
+import network.server.Server;
 import utils.Handler;
-import сommands.Command;
 
 import java.io.*;
 
@@ -18,14 +19,27 @@ public class Main {
      * @throws IOException the io exception
      */
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 
         Handler handler = new Handler();
-        handler.getSpaceManager().getSortedCollection();
-        handler.getCmdManeger().getCommand("load").execute(null);
-        while (true) {
-            handler.next();
+        String mode = handler.readLineWithMessage("Режим", false).toLowerCase();
+        switch (mode) {
+            case ("cli"):
+                while (true) handler.next();
+            case ("server"):
+                Server server = new Server(handler);
+                server.run(5959);
+                break;
+            case ("client"):
+                Client client = new Client(handler);
+                client.connect("host",5656);
+                client.run();
         }
+//        handler.getSpaceManager().getSortedCollection();
+//        handler.getCmdManeger().getCommand("load").execute(null);
+//        while (true) {
+//            handler.next();
+//        }
 
     }
 }

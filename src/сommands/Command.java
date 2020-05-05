@@ -53,11 +53,16 @@ public abstract class Command implements Serializable {
      */
     public abstract boolean execute(String args[]) throws IOException;
 
+    public String[] getArgs() {
+        return args;
+    }
+
     /**
      * Gets collection manager.
      *
      * @return the collection manager
      */
+
     public SpaceManager getCollectionManager() {
         return getCmdManager().getHandler().getSpaceManager();
     }
@@ -108,9 +113,7 @@ public abstract class Command implements Serializable {
     }
 
     public void readArgs() {
-        argsObject.clear();
-        SpaceMarine marine = getUserHandler().readSpaceMarine();
-        argsObject.add(marine);
+       return;
     }
     public List<Object> getArgsObject() {
         return argsObject;

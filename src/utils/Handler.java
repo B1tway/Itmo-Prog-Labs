@@ -66,6 +66,14 @@ public class Handler {
 
     }
 
+    public PrintWriter getPrintWriter() {
+        return printWriter;
+    }
+
+    public void setPrintWriter(PrintWriter printWriter) {
+        this.printWriter = printWriter;
+    }
+
     public Command nextCommand() throws IOException {
         if (interactive) write(">> ");
         String[] args = readCommand();
@@ -517,5 +525,9 @@ public class Handler {
      */
     public void downStackCount() {
         stackCount--;
+    }
+
+    public void writeln(Object object) {
+        writeln(object.toString());
     }
 }

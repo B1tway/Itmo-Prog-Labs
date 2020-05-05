@@ -1,39 +1,149 @@
 package network.client;
 
+import network.Response;
 import utils.Handler;
 import сommands.Command;
 
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.Arrays;
 
 public class Client {
     private Handler handler;
     private SocketChannel channel;
     private ByteBuffer buffer;
-    public Client() {
-        buffer = ByteBuffer.allocate(1024);
+    private ByteArrayInputStream input;
+    private ByteArrayOutputStream ouput;
+    public Client(Handler handler) {
+        buffer = ByteBuffer.allocate(8192);
         buffer.clear();
-        handler = new Handler();
+        setHandler(handler);
+        ouput = new ByteArrayOutputStream();
+        input = new ByteArrayInputStream(ouput.toByteArray());
     }
-    private void connect(String host, int port) throws IOException {
+
+    public void connect(String host, int port) throws IOException {
         handler.writeln("\"===============\\nConnecting to the network.client.server...\\n Host: \" + host + \"\\n Port: \" + port");
-        channel = SocketChannel.open(new InetSocketAddress(host,port));
-        channel.configureBlocking(false);
+        try {
+            channel = SocketChannel.open(new InetSocketAddress(InetAddress.getByName(null), port));
+            channel.configureBlocking(false);
+        } catch (ConnectException exp) {
+            System.out.println("Сервер не отвечает");
+        }
+
     }
-    private void nextCommand() throws IOException {
-        String userInput;
+
+    public void run() throws IOException, ClassNotFoundException, InterruptedException {
         while (channel.isConnected()) {
 
-        }
+                sendData(write());
+                System.out.println(Arrays.toString(buffer.array()));
+                Thread.sleep(10);
+                buffer.clear();
+                handler.writeln("\nbabba");
+                Response response = readData();
+//                System.out.println(response);
+//              String str = response;
 
+//                handler.writeln(response.toString()+ "\nabba");
+
+
+        }
     }
-    private void write(Command cmd) {
-        if(cmd == null) {
 
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+    }
+
+
+    private void sendData(byte[] data) throws IOException {
+        buffer.clear();
+        buffer.put(data);
+        buffer.flip();
+        while (buffer.hasRemaining()) {
+            channel.write(buffer);
         }
+    }
 
+    private Response readData() throws IOException, ClassNotFoundException {
+        ouput = new ByteArrayOutputStream();
+        buffer.clear();
+        byte[] temp = new byte[0];
+        while (true) {
+            int receivedBytesCount = channel.read(buffer);
+            if (receivedBytesCount > 0) {
+                do {
+                    buffer.flip();
+                    if (!buffer.hasArray()) {
+                        return null;
+                    }
+                    temp = concat(temp,buffer.array());
+                    buffer.clear();
+                    receivedBytesCount = channel.read(buffer);
+                } while (receivedBytesCount > 0);
+                break;
+            }
+        }
+        System.out.println(Arrays.toString(temp));
+        ouput.flush();
+        ouput.write(temp);
 
+        input = new ByteArrayInputStream(ouput.toByteArray());
+        ObjectInputStream in = new ObjectInputStream(input);
+        Response response = (Response) in.readObject();
+        in.close();
+        ouput.close();
+        return response;
+    }
+
+    private byte[] write() throws IOException {
+        Command cmd = handler.nextCommand();
+        ObjectOutputStream out = new ObjectOutputStream(ouput);
+        out.writeObject(cmd);
+        out.close();
+        return ouput.toByteArray();
+    }
+
+    private String parseServerAnswer(Response response) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(response.getData());
+        ObjectInputStream in = new ObjectInputStream(inputStream);
+        String str = (String) in.readObject();
+        inputStream.close();
+        return str;
+    }
+    public byte[] concat(byte[] first, byte[] second) {
+        byte[] result = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
+    }
+    private byte[] fixHeaders(byte[] b) {
+        short q = ObjectStreamConstants.STREAM_MAGIC;
+        short z = ObjectStreamConstants.STREAM_VERSION;
+        if (getShort(b, 0) != q || getShort(b, 2) != z) {
+            byte[] newTemp = new byte[b.length + 4];
+            putShort(newTemp, 0, q);
+            putShort(newTemp, 2, z);
+            for (int i = 0; i < b.length; i++) {
+                newTemp[i + 4] = b[i];
+            }
+            return newTemp;
+        }
+        return b;
+    }
+
+    private void putShort(byte[] b, int off, short val) {
+        b[off + 1] = (byte) (val);
+        b[off] = (byte) (val >>> 8);
+    }
+
+    private short getShort(byte[] b, int off) {
+        return (short) ((b[off + 1] & 0xFF) +
+                (b[off] << 8));
     }
 }

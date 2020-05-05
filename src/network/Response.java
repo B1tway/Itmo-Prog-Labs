@@ -2,16 +2,18 @@ package network;
 
 import java.io.Serializable;
 
-public class Request implements Serializable {
+public class Response implements Serializable {
     private byte[] data;
     private int size;
 
-    public Request(byte[] data) {
+
+    public Response(byte[] data) {
         this.data = data;
         this.size = data.length;
     }
 
-    public Request(String message) {
+
+    public Response(String message) {
         this(message.getBytes());
     }
 
