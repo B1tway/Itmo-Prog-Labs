@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
@@ -44,9 +45,13 @@ public class Client {
     public void run() throws IOException, ClassNotFoundException, InterruptedException {
         while (channel.isConnected()) {
                 ouput = new ByteArrayOutputStream();
+                ouput.flush();
                 sendData(write());
+                ouput.flush();
                 Thread.sleep(30);
+                ouput.flush();
                 Response response = readData();
+                ouput.flush();
                 String message = parseServerAnswer(response);
                 handler.writeln(message);
 
@@ -68,7 +73,7 @@ public class Client {
         }
     }
 
-    private Response readData() throws IOException, ClassNotFoundException {
+    private Response readData() throws IOException, ClassNotFoundException, InterruptedException {
         int skip = buffer.position();
         buffer.clear();
         byte[] temp = new byte[0];
@@ -82,6 +87,7 @@ public class Client {
                     }
                     temp = concat(temp,buffer.array());
                     buffer.clear();
+                    Thread.sleep(10);
                     receivedBytesCount = channel.read(buffer);
                 } while (receivedBytesCount > 0);
                 break;
@@ -99,7 +105,7 @@ public class Client {
         Command cmd = handler.nextCommand();
         ObjectOutputStream out = new ObjectOutputStream(ouput);
         out.writeObject(cmd);
-        out.close();
+        out.flush();
         return ouput.toByteArray();
     }
 
