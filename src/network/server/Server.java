@@ -66,10 +66,10 @@ public class Server {
                     } catch (IOException exp) {
                         logger.debug("Полезователь отключился");
                         handler.getCmdManeger().getCommand("save");
+                        logger.debug("Коллекция сохранена");
                         sendResponse(socket, getResponse(new Response("")));
-                        System.exit(0);
                     } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+                        logger.debug("Пришел неизвестный класс");
                     }
                     try {
                         String message = out.toString();

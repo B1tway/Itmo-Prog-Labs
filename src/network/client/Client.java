@@ -185,9 +185,9 @@ public class Client {
     private void reconnect() {
         handler.writeln("Try to reconnect");
         try {
-            channel = SocketChannel.open(new InetSocketAddress(InetAddress.getByName(null), currentPort));
+            channel = SocketChannel.open(new InetSocketAddress(InetAddress.getByName(currentHost), currentPort));
             channel.configureBlocking(false);
-            System.out.println("Connect successful");
+            System.out.println("Reconnect successful");
         } catch (ConnectException | NullPointerException | UnknownHostException exp) {
             System.out.println("Сервер не отвечает");
             System.exit(0);

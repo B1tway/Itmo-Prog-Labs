@@ -7,6 +7,6 @@ public class MainClient {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         Client client = new Client(new Handler());
 
-        client.run("localhost", 5659);
+        client.run("localhost", 1013);
     }
 }
