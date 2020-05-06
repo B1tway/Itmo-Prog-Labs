@@ -67,6 +67,9 @@ public class Server {
                         System.out.println(message);
                         Response answ = new Response(message);
                         sendResponse(socket, answ);
+                        out.close();
+                        out = new ByteArrayOutputStream();
+                        handler.setPrintWriter(new PrintWriter(out));
                     } catch (Exception exp) {
                         System.out.println("Ошибка ответа");
                         exp.printStackTrace();
