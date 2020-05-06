@@ -23,11 +23,11 @@ public class RemoveKeyCommand extends Command {
         try {
             key = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
-            System.out.println("Неверные параметры, введите ключ");
+            getUserHandler().writeln("Неверные параметры, введите ключ");
             return true;
         }
-        if(sm.contains(key)) System.out.println("Элемент удален успешно");
-        else System.out.println("Элемент с таким ключем не существует");
+        if(sm.contains(key)) getUserHandler().writeln("Элемент удален успешно");
+        else getUserHandler().writeln("Элемент с таким ключем не существует");
         sm.remove(key);
         return true;
     }

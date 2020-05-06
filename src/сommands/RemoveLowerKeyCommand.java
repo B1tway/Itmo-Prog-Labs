@@ -22,7 +22,7 @@ public class RemoveLowerKeyCommand extends Command {
         try {
             key = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
-            System.out.println("Неверные параметры, введите ключ");
+            getUserHandler().writeln("Неверные параметры, введите ключ");
             return true;
         }
 

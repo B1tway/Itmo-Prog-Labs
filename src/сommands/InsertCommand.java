@@ -24,17 +24,19 @@ public class InsertCommand extends Command {
         try {
             key = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
-            System.out.println("Неверные параметры, введите ключ");
+            getUserHandler().writeln("Неверные параметры, введите ключ");
             return true;
         }
         if (sm.contains(key)) {
-            System.out.println("Элемент с таким ключем уже содержится");
+            getUserHandler().writeln("Элемент с таким ключем уже содержится");
             return true;
         }
-        SpaceMarine spaceMarine = sm.getHandler().readSpaceMarine();
+        SpaceMarine spaceMarine = null;
+        if (argsObject.size() == 0) spaceMarine = sm.getHandler().readSpaceMarine();
+        spaceMarine = (SpaceMarine) argsObject.get(0);
 
         sm.insert(key, spaceMarine);
-
+        getUserHandler().writeln("Элемент вставлен");
         return true;
     }
 

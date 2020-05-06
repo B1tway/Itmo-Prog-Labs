@@ -23,16 +23,16 @@ public class UpdateCommand extends Command {
         try {
             id = Integer.parseInt(args[0]);
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException exp) {
-            System.out.println("Неверные параметры, введите id");
+            getUserHandler().writeln("Неверные параметры, введите id");
             return true;
         }
         if (!sm.containsId(id)) {
-            System.out.println("Элемента с таким id нет в коллекции");
+            getUserHandler().writeln("Элемента с таким id нет в коллекции");
             return true;
         }
         SpaceMarine marine = getUserHandler().readSpaceMarine();
         sm.update(id, marine);
-        System.out.println("Обьект обновлен");
+        getUserHandler().writeln("Обьект обновлен");
         return true;
     }
 

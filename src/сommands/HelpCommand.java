@@ -22,7 +22,7 @@ public class HelpCommand extends Command {
         Object[] commands = cmdManager.getCommands();
         for (int i = 0; i < commands.length; i++) {
             Command current = (Command) commands[i];
-            System.out.println(current.getCommandName() + " : " + current.getInfo());
+            getUserHandler().writeln(current.getCommandName() + " : " + current.getInfo());
         }
         return true;
     }

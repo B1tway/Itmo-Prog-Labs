@@ -27,11 +27,11 @@ public class FilterByCategoryCommand extends Command {
 
         List<SpaceMarine> list = sm.filterByCategory(category);
         if(list.size() == 0) {
-            System.out.println("Таких элементов нет");
+            getUserHandler().writeln("Таких элементов нет");
             return true;
         }
         for (SpaceMarine marine : list) {
-            System.out.println(marine.toString());
+            getUserHandler().writeln(marine.toString());
         }
         return true;
     }

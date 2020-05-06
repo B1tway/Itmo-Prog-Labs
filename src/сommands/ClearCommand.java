@@ -18,6 +18,7 @@ public class ClearCommand extends Command {
     public boolean execute(String[] args) throws IOException {
         SpaceManager spaceManager = getCollectionManager();
         spaceManager.clear();
+        getUserHandler().writeln("Коллекция очищена");
         return true;
     }
 }

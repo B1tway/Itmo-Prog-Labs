@@ -23,6 +23,7 @@ public class Client {
     private ByteArrayInputStream input;
     private ByteArrayOutputStream ouput;
     private ObjectOutputStream objectOutputStream;
+
     public Client(Handler handler) {
         buffer = ByteBuffer.allocate(8192);
         buffer.clear();
@@ -44,16 +45,16 @@ public class Client {
 
     public void run() throws IOException, ClassNotFoundException, InterruptedException {
         while (channel.isConnected()) {
-                ouput = new ByteArrayOutputStream();
-                ouput.flush();
-                sendData(write());
-                ouput.flush();
-                Thread.sleep(30);
-                ouput.flush();
-                Response response = readData();
-                ouput.flush();
-                String message = parseServerAnswer(response);
-                handler.writeln(message);
+            ouput = new ByteArrayOutputStream();
+            ouput.flush();
+            sendData(write());
+            ouput.flush();
+            Thread.sleep(30);
+            ouput.flush();
+            Response response = readData();
+            ouput.flush();
+            String message = parseServerAnswer(response);
+            handler.writeln(message);
 
 
         }
@@ -74,6 +75,7 @@ public class Client {
     }
 
     private Response readData() throws IOException, ClassNotFoundException, InterruptedException {
+
         int skip = buffer.position();
         buffer.clear();
         byte[] temp = new byte[0];
@@ -85,38 +87,41 @@ public class Client {
                     if (!buffer.hasArray()) {
                         return null;
                     }
-                    temp = concat(temp,buffer.array());
+                    temp = concat(temp, buffer.array());
                     buffer.clear();
-                    Thread.sleep(10);
+                    Thread.sleep(50);
                     receivedBytesCount = channel.read(buffer);
-                } while (receivedBytesCount > 0);
+                } while (receivedBytesCount != 0);
                 break;
             }
         }
         System.out.println(Arrays.toString(temp));
-        input = new ByteArrayInputStream(temp);
-        ObjectInputStream in = new ObjectInputStream(input);
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(temp));
         Response response = (Response) in.readObject();
         ouput.flush();
         return response;
+
     }
 
     private byte[] write() throws IOException {
         Command cmd = handler.nextCommand();
-        ObjectOutputStream out = new ObjectOutputStream(ouput);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(outputStream);
         out.writeObject(cmd);
         out.flush();
-        return ouput.toByteArray();
+        return outputStream.toByteArray();
     }
 
     private String parseServerAnswer(Response response) throws IOException, ClassNotFoundException {
         return new String(response.getData());
     }
+
     public byte[] concat(byte[] first, byte[] second) {
         byte[] result = Arrays.copyOf(first, first.length + second.length);
         System.arraycopy(second, 0, result, first.length, second.length);
         return result;
     }
+
     private byte[] fixHeaders(byte[] b) {
         short q = ObjectStreamConstants.STREAM_MAGIC;
         short z = ObjectStreamConstants.STREAM_VERSION;

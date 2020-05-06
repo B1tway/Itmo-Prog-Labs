@@ -50,9 +50,9 @@ public class ExecuteCommand extends Command {
                 if (!uh.next()) break;
             }
             uh.setScanner(old);
-            System.out.println("Закончился скрипт " + fileName);
+            getUserHandler().writeln("Закончился скрипт " + fileName);
         } catch (Exception exp) {
-            System.out.println("Файл не найден или недоступен");
+            getUserHandler().writeln("Закончился скрипт " + fileName);
         }
         uh.downStackCount();
         uh.setInteractive(true);

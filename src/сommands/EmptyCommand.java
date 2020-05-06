@@ -15,7 +15,7 @@ public class EmptyCommand extends Command {
 
     @Override
     public boolean execute(String[] args) throws IOException {
-        System.out.println("Такой команды не существует");
+        getUserHandler().writeln("Такой команды не существует");
         return true;
     }
 }

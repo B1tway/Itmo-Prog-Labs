@@ -53,25 +53,25 @@ public class Server {
 
                 while (socket.isConnected()) {
                     try {
-                        objectInputStream = new ObjectInputStream(socket.getInputStream());
-                        objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                        Command cmd = readCommand(socket);
+
+                        Command cmd = readCmd(socket);
                         executeCommand(cmd);
                     } catch (Exception exp) {
                         System.out.println("Ошибка запроса");
-                        exp.printStackTrace();
+                        sendResponse(socket, getResponse(new Response("empty")));
                         System.exit(0);
                     }
                     try {
                         String message = out.toString();
                         System.out.println(message);
                         Response answ = new Response(message);
-                        sendResponse(socket, answ);
+                        sendResponse(socket, getResponse(answ));
                         out.close();
                         out = new ByteArrayOutputStream();
                         handler.setPrintWriter(new PrintWriter(out));
                     } catch (Exception exp) {
                         System.out.println("Ошибка ответа");
+                        sendResponse(socket, getResponse(new Response("empty")));
                         exp.printStackTrace();
                         System.exit(0);
                     }
@@ -79,7 +79,8 @@ public class Server {
 
                 }
             } catch (IOException exp) {
-                exp.printStackTrace();
+                System.out.println(exp.getMessage());
+
             }
 
         }
@@ -89,7 +90,12 @@ public class Server {
     private Command readCommand(Socket socket) throws IOException, ClassNotFoundException {
 
         Command cmd = (Command) objectInputStream.readObject();
-        objectOutputStream.flush();
+        return cmd;
+    }
+    private Command readCmd(Socket socket) throws IOException, ClassNotFoundException {
+        InputStream socketInput = socket.getInputStream();
+        ObjectInputStream inputStream = new ObjectInputStream(socketInput);
+        Command cmd = (Command) inputStream.readObject();
         return cmd;
     }
 
@@ -99,9 +105,19 @@ public class Server {
     }
 
     private void sendResponse(Socket socket, Response response) throws IOException {
-        objectOutputStream.flush();
         objectOutputStream.writeObject(response);
         objectOutputStream.flush();
     }
+
+    private byte[] getResponse(Response response) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(response);
+        return outputStream.toByteArray();
+    }
+    private void sendResponse(Socket socket, byte[] bytes) throws IOException {
+        socket.getOutputStream().write(bytes);
+    }
+
 
 }
