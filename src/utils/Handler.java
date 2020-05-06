@@ -14,6 +14,10 @@ import java.util.*;
  * The type User handler.
  */
 public class Handler {
+    /**
+     * The Stack count.
+     */
+    int stackCount = 0;
     private CommandManager cmdManeger;
     private Scanner scanner;
     private PrintWriter printWriter;
@@ -22,19 +26,6 @@ public class Handler {
     private boolean interactive = true;
     private int stackSize = 1000;
     private Set<String> files;
-    /**
-     * The Stack count.
-     */
-    int stackCount = 0;
-
-    /**
-     * Sets interactive.
-     *
-     * @param interactive the interactive
-     */
-    public void setInteractive(boolean interactive) {
-        this.interactive = interactive;
-    }
 
     /**
      * Instantiates a new User handler.
@@ -48,6 +39,15 @@ public class Handler {
         this.spaceManager = new SpaceManager();
         spaceManager.setHandler(this);
         this.files = new HashSet<>();
+    }
+
+    /**
+     * Sets interactive.
+     *
+     * @param interactive the interactive
+     */
+    public void setInteractive(boolean interactive) {
+        this.interactive = interactive;
     }
 
     /**
@@ -469,21 +469,21 @@ public class Handler {
     }
 
     /**
-     * Sets scanner.
-     *
-     * @param scanner the scanner
-     */
-    public void setScanner(Scanner scanner) {
-        this.scanner = scanner;
-    }
-
-    /**
      * Gets scanner.
      *
      * @return the scanner
      */
     public Scanner getScanner() {
         return scanner;
+    }
+
+    /**
+     * Sets scanner.
+     *
+     * @param scanner the scanner
+     */
+    public void setScanner(Scanner scanner) {
+        this.scanner = scanner;
     }
 
     /**
@@ -496,21 +496,21 @@ public class Handler {
     }
 
     /**
-     * Gets stack size.
-     *
-     * @return the stack size
-     */
-    public int getStackSize() {
-        return stackSize;
-    }
-
-    /**
      * Sets stack count.
      *
      * @param stackCount the stack count
      */
     public void setStackCount(int stackCount) {
         this.stackCount = stackCount;
+    }
+
+    /**
+     * Gets stack size.
+     *
+     * @return the stack size
+     */
+    public int getStackSize() {
+        return stackSize;
     }
 
     /**

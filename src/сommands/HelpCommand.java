@@ -1,7 +1,6 @@
 package сommands;
 
 import java.io.IOException;
-import java.io.StringReader;
 
 /**
  * The type Help command.

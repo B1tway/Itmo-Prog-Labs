@@ -2,7 +2,7 @@ import network.client.Client;
 import network.server.Server;
 import utils.Handler;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  * The type Main.
@@ -27,12 +27,15 @@ public class Main {
             case ("cli"):
                 while (true) handler.next();
             case ("server"):
+                int port = handler.readInt("Введите порт",false);
                 Server server = new Server(handler);
-                server.run(5659);
+                server.run(port);
                 break;
             case ("client"):
+                String host = handler.readLineWithMessage("Введите host", false);
+                int portClient = handler.readInt("Введите порт",false);
                 Client client = new Client(handler);
-                client.run("host",5656);
+                client.run(host,portClient);
         }
 //        handler.getSpaceManager().getSortedCollection();
 //        handler.getCmdManeger().getCommand("load").execute(null);

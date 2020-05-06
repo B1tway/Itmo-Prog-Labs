@@ -14,20 +14,6 @@ public class CommandManager {
     private Handler handler;
 
     /**
-     * Gets user handler.
-     *
-     * @return the user handler
-     */
-    public Handler getHandler() {
-        return handler;
-    }
-
-    private void addCommand(Command command) {
-        command.setCmdManager(this);
-        commands.put(command.getCommandName(), command);
-    }
-
-    /**
      * Instantiates a new Command manager.
      */
     public CommandManager() {
@@ -50,6 +36,29 @@ public class CommandManager {
         addCommand(new ExecuteCommand());
         addCommand(new ExitCommand());
 
+    }
+
+    /**
+     * Gets user handler.
+     *
+     * @return the user handler
+     */
+    public Handler getHandler() {
+        return handler;
+    }
+
+    /**
+     * Sets user handler.
+     *
+     * @param handler the user handler
+     */
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+    }
+
+    private void addCommand(Command command) {
+        command.setCmdManager(this);
+        commands.put(command.getCommandName(), command);
     }
 
     /**
@@ -93,15 +102,6 @@ public class CommandManager {
      */
     public Object[] getCommands() {
         return commands.values().toArray();
-    }
-
-    /**
-     * Sets user handler.
-     *
-     * @param handler the user handler
-     */
-    public void setHandler(Handler handler) {
-        this.handler = handler;
     }
 
 }

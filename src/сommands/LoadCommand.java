@@ -5,20 +5,12 @@ import utils.Parser;
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Stream;
 
 /**
  * The type Load command.
@@ -68,7 +60,7 @@ public class LoadCommand extends Command {
                     incorrect = true;
                     continue;
                 }
-                if ( marine.getChapter().getCount() != null && (marine.getChapter().getCount() < 0 || marine.getChapter().getCount() > 1000)) {
+                if (marine.getChapter().getCount() != null && (marine.getChapter().getCount() < 0 || marine.getChapter().getCount() > 1000)) {
                     System.out.println("Некорректный marineCount");
                     incorrect = true;
                     continue;

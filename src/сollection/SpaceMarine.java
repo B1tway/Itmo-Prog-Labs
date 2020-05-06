@@ -4,15 +4,12 @@ import java.io.Serializable;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.Objects;
-import java.util.Random;
-import java.util.Scanner;
 
 /**
  * The type Space marine.
  */
-public class SpaceMarine implements Comparable<SpaceMarine>, Serializable{
+public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
     private int id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -159,6 +156,15 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable{
     }
 
     /**
+     * Sets creation date.
+     *
+     * @param creationDate the creation date
+     */
+    public void setCreationDate(ZonedDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    /**
      * Gets health.
      *
      * @return the health
@@ -276,14 +282,5 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable{
         Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return id + separator + name + separator + coordinates.toString() + separator + creationDate.toString() + separator +
                 health + separator + category + separator + weaponType + separator + meleeWeapon + separator + chapter.toString();
-    }
-
-    /**
-     * Sets creation date.
-     *
-     * @param creationDate the creation date
-     */
-    public void setCreationDate(ZonedDateTime creationDate) {
-        this.creationDate = creationDate;
     }
 }

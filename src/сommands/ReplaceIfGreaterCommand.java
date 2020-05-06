@@ -1,9 +1,7 @@
 package сommands;
 
-import utils.Handler;
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
-import сollection.Weapon;
 
 import java.io.IOException;
 
@@ -15,7 +13,7 @@ public class ReplaceIfGreaterCommand extends Command {
      * Instantiates a new Replace if greater command.
      */
     public ReplaceIfGreaterCommand() {
-        super("replace_if_greater","заменить значение по ключу, если новое значение больше старого");
+        super("replace_if_greater", "заменить значение по ключу, если новое значение больше старого");
     }
 
     @Override
@@ -30,7 +28,7 @@ public class ReplaceIfGreaterCommand extends Command {
         }
 
         SpaceMarine spaceMarine = (SpaceMarine) argsObject.get(0);
-        sm.replaceIfGreaterThan(key,spaceMarine);
+        sm.replaceIfGreaterThan(key, spaceMarine);
         return true;
     }
 

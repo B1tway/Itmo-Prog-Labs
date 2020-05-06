@@ -4,7 +4,6 @@ package сommands;
 import сollection.AstartesCategory;
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
-import сollection.Weapon;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,9 +22,9 @@ public class FilterByCategoryCommand extends Command {
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager sm = getCollectionManager();
-        AstartesCategory category =(AstartesCategory) argsObject.get(0);
+        AstartesCategory category = (AstartesCategory) argsObject.get(0);
         List<SpaceMarine> list = sm.filterByCategory(category);
-        if(list.size() == 0) {
+        if (list.size() == 0) {
             getUserHandler().writeln("Таких элементов нет");
             return true;
         }

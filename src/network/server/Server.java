@@ -7,30 +7,25 @@ import utils.Handler;
 import сommands.Command;
 
 import java.io.*;
-import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Scanner;
-
-import static org.slf4j.LoggerFactory.getLogger;
 
 
 public class Server {
+    private static Logger logger;
     private ServerSocket server;
     private boolean running = false;
     private Handler handler;
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private OutputStream out;
-    private static Logger logger;
+
     public Server(Handler handler) throws IOException {
         setHandler(handler);
         handler.getCmdManeger().getCommand("load").execute(null);
         out = new ByteArrayOutputStream();
         logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         handler.setPrintWriter(new PrintWriter(out));
-
 
 
     }
@@ -107,6 +102,7 @@ public class Server {
         Command cmd = (Command) objectInputStream.readObject();
         return cmd;
     }
+
     private Command readCmd(Socket socket) throws IOException, ClassNotFoundException {
         InputStream socketInput = socket.getInputStream();
         ObjectInputStream inputStream = new ObjectInputStream(socketInput);
@@ -130,6 +126,7 @@ public class Server {
         objectOutputStream.writeObject(response);
         return outputStream.toByteArray();
     }
+
     private void sendResponse(Socket socket, byte[] bytes) throws IOException {
         socket.getOutputStream().write(bytes);
     }

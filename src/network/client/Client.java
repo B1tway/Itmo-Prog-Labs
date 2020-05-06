@@ -6,13 +6,13 @@ import сommands.Command;
 import сommands.EmptyCommand;
 
 import java.io.*;
-import java.lang.reflect.Array;
-import java.net.*;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
-import java.util.concurrent.TimeoutException;
 
 public class Client {
     private Handler handler;
@@ -23,6 +23,7 @@ public class Client {
     private ObjectOutputStream objectOutputStream;
     private String currentHost;
     private int currentPort;
+
     public Client(Handler handler) {
         buffer = ByteBuffer.allocate(2048);
         buffer.clear();
@@ -33,7 +34,7 @@ public class Client {
     public void connect(String host, int port) throws IOException {
         handler.writeln("Try to connect");
         try {
-            channel = SocketChannel.open(new InetSocketAddress(InetAddress.getByName(null), port));
+            channel = SocketChannel.open(new InetSocketAddress(InetAddress.getByName(host), port));
             channel.configureBlocking(false);
             this.currentHost = host;
             this.currentPort = port;
@@ -46,7 +47,7 @@ public class Client {
     }
 
     public void run(String host, int port) throws IOException, ClassNotFoundException, InterruptedException {
-        connect(host,port);
+        connect(host, port);
         while (channel.isConnected()) {
             try {
                 sendData(write());
@@ -54,17 +55,14 @@ public class Client {
                 Response response = readData();
                 String message = parseServerAnswer(response);
                 handler.writeln(message);
-            }
-            catch (IOException exp) {
+            } catch (IOException exp) {
                 try {
-                    connect(host,port);
+                    connect(host, port);
+                } catch (IOException expt) {
+                    System.out.println("Соединение потеряно");
+                    System.exit(0);
                 }
-               catch (IOException expt) {
-                   System.out.println("Соединение потеряно");
-                   System.exit(0);
-               }
-            }
-            catch (NullPointerException exp) {
+            } catch (NullPointerException exp) {
                 System.out.println("");
             }
 
@@ -79,75 +77,74 @@ public class Client {
 
     private void sendData(byte[] data) throws IOException {
 
-            buffer.clear();
-            buffer.put(data);
-            buffer.flip();
-            while (buffer.hasRemaining()) {
-                try {
-                    channel.write(buffer);
-                }
-                catch (IOException exp) {
-                    reconnect();
-                    channel.write(buffer);
-                }
+        buffer.clear();
+        buffer.put(data);
+        buffer.flip();
+        while (buffer.hasRemaining()) {
+            try {
+                channel.write(buffer);
+            } catch (IOException exp) {
+                reconnect();
+                channel.write(buffer);
             }
+        }
 
     }
 
     private Response readData() throws IOException, ClassNotFoundException, InterruptedException {
 
-            int skip = buffer.position();
-            buffer.clear();
-            byte[] temp = new byte[0];
-            while (true) {
-                int  receivedBytesCount = 0;
-                try {
-                receivedBytesCount = channel.read(buffer);}
-                catch (IOException exp) {
-                    reconnect();
-                    receivedBytesCount = channel.read(buffer);
-                }
-                if (receivedBytesCount > 0) {
-                    do {
-                        buffer.flip();
-                        if (!buffer.hasArray()) {
-                            return null;
-                        }
-                        temp = concat(temp, buffer.array());
-                        buffer.clear();
-                        Thread.sleep(50);
-                        try {
-                            receivedBytesCount = channel.read(buffer);
-                        } catch (IOException exp) {
-                            reconnect();
-                            receivedBytesCount = channel.read(buffer);
-                        }
-                    } while (receivedBytesCount != 0);
-                    break;
-                }
+        int skip = buffer.position();
+        buffer.clear();
+        byte[] temp = new byte[0];
+        while (true) {
+            int receivedBytesCount = 0;
+            try {
+                receivedBytesCount = channel.read(buffer);
+            } catch (IOException exp) {
+                reconnect();
+                receivedBytesCount = channel.read(buffer);
             }
+            if (receivedBytesCount > 0) {
+                do {
+                    buffer.flip();
+                    if (!buffer.hasArray()) {
+                        return null;
+                    }
+                    temp = concat(temp, buffer.array());
+                    buffer.clear();
+                    Thread.sleep(50);
+                    try {
+                        receivedBytesCount = channel.read(buffer);
+                    } catch (IOException exp) {
+                        reconnect();
+                        receivedBytesCount = channel.read(buffer);
+                    }
+                } while (receivedBytesCount != 0);
+                break;
+            }
+        }
 
-            ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(temp));
-            Response response = (Response) in.readObject();
-            return response;
+        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(temp));
+        Response response = (Response) in.readObject();
+        return response;
 
     }
 
     private byte[] write() throws IOException {
-            Command cmd = handler.nextCommand();
-            if (cmd.getCommandName().equals("exit")) {
-                System.out.println("Завершение работы");
-                System.exit(0);
-            }
-            if(cmd.getCommandName().equals("save")) {
-                System.out.println("Команда не достапна пользователя");
-                cmd = new EmptyCommand();
-            }
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ObjectOutputStream out = new ObjectOutputStream(outputStream);
-            out.writeObject(cmd);
-            out.flush();
-            return outputStream.toByteArray();
+        Command cmd = handler.nextCommand();
+        if (cmd.getCommandName().equals("exit")) {
+            System.out.println("Завершение работы");
+            System.exit(0);
+        }
+        if (cmd.getCommandName().equals("save")) {
+            System.out.println("Команда не достапна пользователя");
+            cmd = new EmptyCommand();
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(outputStream);
+        out.writeObject(cmd);
+        out.flush();
+        return outputStream.toByteArray();
     }
 
     private String parseServerAnswer(Response response) throws IOException, ClassNotFoundException {
@@ -184,6 +181,7 @@ public class Client {
         return (short) ((b[off + 1] & 0xFF) +
                 (b[off] << 8));
     }
+
     private void reconnect() {
         handler.writeln("Try to reconnect");
         try {

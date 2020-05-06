@@ -1,7 +1,6 @@
 package сommands;
 
 import сollection.SpaceManager;
-import сollection.SpaceMarine;
 
 import java.io.IOException;
 
@@ -13,7 +12,7 @@ public class RemoveKeyCommand extends Command {
      * Instantiates a new Remove key command.
      */
     public RemoveKeyCommand() {
-        super("remove_key"," удалить из коллекции все элементы, ключ которых меньше, чем заданный");
+        super("remove_key", " удалить из коллекции все элементы, ключ которых меньше, чем заданный");
     }
 
     @Override
@@ -26,7 +25,7 @@ public class RemoveKeyCommand extends Command {
             getUserHandler().writeln("Неверные параметры, введите ключ");
             return true;
         }
-        if(sm.contains(key)) getUserHandler().writeln("Элемент удален успешно");
+        if (sm.contains(key)) getUserHandler().writeln("Элемент удален успешно");
         else getUserHandler().writeln("Элемент с таким ключем не существует");
         sm.remove(key);
         return true;

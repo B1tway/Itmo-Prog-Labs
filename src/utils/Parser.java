@@ -2,12 +2,9 @@ package utils;
 
 import сollection.*;
 
-import java.text.Format;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.StringTokenizer;
 
 /**
@@ -35,7 +32,7 @@ public class Parser {
             Coordinates coordinates = parseCoordinates(tokens[2].trim());
             ZonedDateTime date = ZonedDateTime.parse(tokens[3].trim());
             float health = Float.parseFloat(tokens[4].trim());
-            AstartesCategory category =  tokens[5].equals("null")? null : AstartesCategory.valueOf(tokens[5].trim());
+            AstartesCategory category = tokens[5].equals("null") ? null : AstartesCategory.valueOf(tokens[5].trim());
             Weapon weapon = Weapon.valueOf(tokens[6].trim());
             MeleeWeapon meleeWeapon = MeleeWeapon.valueOf(tokens[7].trim());
             Chapter chapter = parseChapter(tokens[8].trim());
@@ -83,7 +80,7 @@ public class Parser {
     public Chapter parseChapter(String str) {
         str.trim();
         String[] tokens = str.split(":");
-        return new Chapter(tokens[0].trim(), tokens[1].trim(), tokens[2].trim() ,tokens[3].trim().equals("null") ? null : Integer.parseInt(tokens[3].trim()));
+        return new Chapter(tokens[0].trim(), tokens[1].trim(), tokens[2].trim(), tokens[3].trim().equals("null") ? null : Integer.parseInt(tokens[3].trim()));
     }
 
     /**

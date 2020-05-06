@@ -2,7 +2,6 @@ package сommands;
 
 import utils.Handler;
 import сollection.SpaceManager;
-import сollection.SpaceMarine;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -77,21 +76,21 @@ public abstract class Command implements Serializable {
     }
 
     /**
-     * Sets cmd manager.
-     *
-     * @param cmdManager the cmd manager
-     */
-    public void setCmdManager(CommandManager cmdManager) {
-        this.cmdManager = cmdManager;
-    }
-
-    /**
      * Gets cmd manager.
      *
      * @return the cmd manager
      */
     public CommandManager getCmdManager() {
         return cmdManager;
+    }
+
+    /**
+     * Sets cmd manager.
+     *
+     * @param cmdManager the cmd manager
+     */
+    public void setCmdManager(CommandManager cmdManager) {
+        this.cmdManager = cmdManager;
     }
 
     /**
@@ -113,8 +112,9 @@ public abstract class Command implements Serializable {
     }
 
     public void readArgs() {
-       return;
+        return;
     }
+
     public List<Object> getArgsObject() {
         return argsObject;
     }

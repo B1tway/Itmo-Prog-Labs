@@ -12,8 +12,9 @@ public class ClearCommand extends Command {
      * Instantiates a new Clear command.
      */
     public ClearCommand() {
-        super("clear","очистить коллекцию");
+        super("clear", "очистить коллекцию");
     }
+
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager spaceManager = getCollectionManager();

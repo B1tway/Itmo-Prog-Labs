@@ -4,15 +4,12 @@ import utils.CSVLoader;
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * The type Save command.
@@ -28,7 +25,7 @@ public class SaveCommand extends Command {
     @Override
     public boolean execute(String[] args) throws IOException {
         String filename = System.getenv("INPUT_PATH");
-        if(filename == null) {
+        if (filename == null) {
             System.out.println("Переменная не найдена");
             System.exit(0);
         }

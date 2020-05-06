@@ -10,7 +10,7 @@ public class EmptyCommand extends Command {
      * Instantiates a new Empty command.
      */
     public EmptyCommand() {
-        super("empty_command","ничего не делает");
+        super("empty_command", "ничего не делает");
     }
 
     @Override

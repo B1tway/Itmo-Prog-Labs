@@ -1,10 +1,7 @@
 package сollection;
 
-import exceptions.ChapterOverflow;
-
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.function.IntBinaryOperator;
 
 /**
  * The type Chapter.
@@ -12,7 +9,7 @@ import java.util.function.IntBinaryOperator;
 public class Chapter implements Comparable<Chapter>, Serializable {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private String parentLegion;
-    private Integer  marinesCount; //Поле может быть null
+    private Integer marinesCount; //Поле может быть null
     private String world; //Поле может быть null
 
     public Chapter(String name, String parentLegion, String world, Integer marinesCount) {
@@ -21,8 +18,6 @@ public class Chapter implements Comparable<Chapter>, Serializable {
         this.world = world;
         this.marinesCount = marinesCount;
     }
-
-
 
 
     /**
@@ -59,7 +54,7 @@ public class Chapter implements Comparable<Chapter>, Serializable {
     @Override
     public String toString() {
         String sepator = ":";
-        String cnt = ((marinesCount == null || marinesCount == 0 ))? null : marinesCount.toString();
+        String cnt = ((marinesCount == null || marinesCount == 0)) ? null : marinesCount.toString();
         return name + sepator + parentLegion + sepator + world + sepator + cnt;
     }
 

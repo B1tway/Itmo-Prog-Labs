@@ -1,7 +1,6 @@
 package сommands;
 
 import сollection.SpaceManager;
-import сollection.SpaceMarine;
 
 import java.io.IOException;
 
@@ -13,8 +12,9 @@ public class RemoveLowerKeyCommand extends Command {
      * Instantiates a new Remove lower key command.
      */
     public RemoveLowerKeyCommand() {
-        super("remove_lower_key","удалить из коллекции все элементы, ключ которых меньше, чем заданный");
+        super("remove_lower_key", "удалить из коллекции все элементы, ключ которых меньше, чем заданный");
     }
+
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager sm = getCollectionManager();
