@@ -1,6 +1,8 @@
 package network.server;
 
 import network.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.Handler;
 import сommands.Command;
 
@@ -11,6 +13,9 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+
 public class Server {
     private ServerSocket server;
     private boolean running = false;
@@ -18,12 +23,15 @@ public class Server {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private OutputStream out;
-
+    private static Logger logger;
     public Server(Handler handler) throws IOException {
         setHandler(handler);
         handler.getCmdManeger().getCommand("load").execute(null);
         out = new ByteArrayOutputStream();
+        logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         handler.setPrintWriter(new PrintWriter(out));
+
+
 
     }
 
@@ -35,9 +43,9 @@ public class Server {
         try {
             server = new ServerSocket(port);
             running = true;
-            System.out.println("Сервер запущен");
+            logger.debug("Сервер запущен");
         } catch (IOException exp) {
-            System.out.println("Не удалось запустить сервер с даннам портом");
+            logger.debug("Не удалось запустить сервер с даннам портом");
         }
     }
 
@@ -52,16 +60,16 @@ public class Server {
         while (running) {
             try {
                 Socket socket = server.accept();
-                System.out.println("Полезователь подключился");
+                logger.debug("Полезователь подключился");
                 while (socket.isConnected()) {
                     try {
 
                         Command cmd = readCmd(socket);
-                        System.out.println("Пользователь запустил команду" + cmd.getCommandName());
+                        logger.debug("Пользователь запустил команду" + cmd.getCommandName());
                         executeCommand(cmd);
-                        System.out.println("Команда заверщена");
+                        logger.debug("Команда заверщена");
                     } catch (IOException exp) {
-                        System.out.println("Полезователь отключился");
+                        logger.debug("Полезователь отключился");
                         handler.getCmdManeger().getCommand("save");
                         sendResponse(socket, getResponse(new Response("")));
                         System.exit(0);
@@ -72,12 +80,12 @@ public class Server {
                         String message = out.toString();
                         Response answ = new Response(message);
                         sendResponse(socket, getResponse(answ));
-                        System.out.println("Отправлен ответ пользователю");
+                        logger.debug("Отправлен ответ пользователю");
                         out.close();
                         out = new ByteArrayOutputStream();
                         handler.setPrintWriter(new PrintWriter(out));
                     } catch (Exception exp) {
-                        System.out.println("Ошибка ответа");
+                        logger.debug("Ошибка ответа");
                         sendResponse(socket, getResponse(new Response("")));
                         exp.printStackTrace();
                         System.exit(0);
