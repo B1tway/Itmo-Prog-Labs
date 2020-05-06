@@ -16,6 +16,7 @@ public class Server {
     private boolean running = false;
     private Handler handler;
     private ObjectOutputStream objectOutputStream;
+    private ObjectInputStream objectInputStream;
     private OutputStream out;
 
     public Server(Handler handler) throws IOException {
@@ -49,30 +50,33 @@ public class Server {
         while (running) {
             try {
                 Socket socket = server.accept();
-                objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
                 while (socket.isConnected()) {
                     try {
+                        objectInputStream = new ObjectInputStream(socket.getInputStream());
+                        objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                         Command cmd = readCommand(socket);
                         executeCommand(cmd);
                     } catch (Exception exp) {
                         System.out.println("Ошибка запроса");
+                        exp.printStackTrace();
+                        System.exit(0);
                     }
                     try {
                         String message = out.toString();
                         System.out.println(message);
                         Response answ = new Response(message);
-                        handler.setPrintWriter(new PrintWriter(socket.getOutputStream()));
-                        socket.getOutputStream().flush();
-                        handler.writeln(message);
-
-                        //sendResponse(socket, answ);
+                        sendResponse(socket, answ);
                     } catch (Exception exp) {
                         System.out.println("Ошибка ответа");
+                        exp.printStackTrace();
+                        System.exit(0);
                     }
 
 
                 }
             } catch (IOException exp) {
+                exp.printStackTrace();
             }
 
         }
@@ -80,10 +84,9 @@ public class Server {
 
 
     private Command readCommand(Socket socket) throws IOException, ClassNotFoundException {
-        InputStream inputStream = socket.getInputStream();
-        ObjectInputStream in = new ObjectInputStream(inputStream);
-        socket.getOutputStream().flush();
-        Command cmd = (Command) in.readObject();
+
+        Command cmd = (Command) objectInputStream.readObject();
+        objectOutputStream.flush();
         return cmd;
     }
 
@@ -93,13 +96,9 @@ public class Server {
     }
 
     private void sendResponse(Socket socket, Response response) throws IOException {
-        socket.getOutputStream().write(123);
-        socket.getOutputStream().flush();
-//        ObjectOutputStream current = new ObjectOutputStream(socket.getOutputStream());
-//        current.flush();
-//        current.writeObject(response);
-//        current.flush();
-//        current.close();
+        objectOutputStream.flush();
+        objectOutputStream.writeObject(response);
+        objectOutputStream.flush();
     }
 
 }

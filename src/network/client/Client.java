@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
 public class Client {
     private Handler handler;
@@ -20,12 +21,13 @@ public class Client {
     private ByteBuffer buffer;
     private ByteArrayInputStream input;
     private ByteArrayOutputStream ouput;
+    private ObjectOutputStream objectOutputStream;
     public Client(Handler handler) {
         buffer = ByteBuffer.allocate(8192);
         buffer.clear();
         setHandler(handler);
         ouput = new ByteArrayOutputStream();
-        input = new ByteArrayInputStream(ouput.toByteArray());
+        input = new ByteArrayInputStream(buffer.array());
     }
 
     public void connect(String host, int port) throws IOException {
@@ -41,17 +43,12 @@ public class Client {
 
     public void run() throws IOException, ClassNotFoundException, InterruptedException {
         while (channel.isConnected()) {
-
+                ouput = new ByteArrayOutputStream();
                 sendData(write());
-                System.out.println(Arrays.toString(buffer.array()));
-                Thread.sleep(10);
-                buffer.clear();
-                handler.writeln("\nbabba");
+                Thread.sleep(30);
                 Response response = readData();
-//                System.out.println(response);
-//              String str = response;
-
-//                handler.writeln(response.toString()+ "\nabba");
+                String message = parseServerAnswer(response);
+                handler.writeln(message);
 
 
         }
@@ -72,7 +69,7 @@ public class Client {
     }
 
     private Response readData() throws IOException, ClassNotFoundException {
-        ouput = new ByteArrayOutputStream();
+        int skip = buffer.position();
         buffer.clear();
         byte[] temp = new byte[0];
         while (true) {
@@ -91,14 +88,10 @@ public class Client {
             }
         }
         System.out.println(Arrays.toString(temp));
-        ouput.flush();
-        ouput.write(temp);
-
-        input = new ByteArrayInputStream(ouput.toByteArray());
+        input = new ByteArrayInputStream(temp);
         ObjectInputStream in = new ObjectInputStream(input);
         Response response = (Response) in.readObject();
-        in.close();
-        ouput.close();
+        ouput.flush();
         return response;
     }
 
@@ -111,11 +104,7 @@ public class Client {
     }
 
     private String parseServerAnswer(Response response) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(response.getData());
-        ObjectInputStream in = new ObjectInputStream(inputStream);
-        String str = (String) in.readObject();
-        inputStream.close();
-        return str;
+        return new String(response.getData());
     }
     public byte[] concat(byte[] first, byte[] second) {
         byte[] result = Arrays.copyOf(first, first.length + second.length);
@@ -146,4 +135,5 @@ public class Client {
         return (short) ((b[off + 1] & 0xFF) +
                 (b[off] << 8));
     }
+
 }
