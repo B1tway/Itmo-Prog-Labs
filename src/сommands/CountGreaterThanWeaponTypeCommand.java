@@ -18,7 +18,8 @@ public class CountGreaterThanWeaponTypeCommand extends Command{
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager sm = getCollectionManager();
-        Weapon weapon = getUserHandler().readWeapon();
+
+        Weapon weapon = (Weapon) argsObject.get(0);
         getUserHandler().writeln(sm.countGreaterThanWeapon(weapon));
         return true;
     }

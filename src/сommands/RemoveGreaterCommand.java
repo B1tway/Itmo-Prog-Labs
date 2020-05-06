@@ -2,6 +2,7 @@ package сommands;
 
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
+import сollection.Weapon;
 
 import java.io.IOException;
 
@@ -18,7 +19,7 @@ public class RemoveGreaterCommand extends Command {
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager spaceManager = getCollectionManager();
-        SpaceMarine marine = getUserHandler().readSpaceMarine();
+        SpaceMarine marine = (SpaceMarine) argsObject.get(0);
         spaceManager.removeGreaterThan(marine);
         return true;
     }

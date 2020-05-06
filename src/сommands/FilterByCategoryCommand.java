@@ -23,8 +23,7 @@ public class FilterByCategoryCommand extends Command {
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager sm = getCollectionManager();
-        AstartesCategory category = getUserHandler().readCategory();
-
+        AstartesCategory category =(AstartesCategory) argsObject.get(0);
         List<SpaceMarine> list = sm.filterByCategory(category);
         if(list.size() == 0) {
             getUserHandler().writeln("Таких элементов нет");

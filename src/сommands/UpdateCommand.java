@@ -2,6 +2,7 @@ package сommands;
 
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
+import сollection.Weapon;
 
 import java.io.IOException;
 
@@ -30,7 +31,7 @@ public class UpdateCommand extends Command {
             getUserHandler().writeln("Элемента с таким id нет в коллекции");
             return true;
         }
-        SpaceMarine marine = getUserHandler().readSpaceMarine();
+        SpaceMarine marine = (SpaceMarine) argsObject.get(0);
         sm.update(id, marine);
         getUserHandler().writeln("Обьект обновлен");
         return true;
