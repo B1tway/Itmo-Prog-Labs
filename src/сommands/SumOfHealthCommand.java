@@ -18,7 +18,7 @@ public class SumOfHealthCommand extends Command {
     @Override
     public boolean execute(String[] args) throws IOException {
         SpaceManager sm = getCollectionManager();
-        System.out.println("Сумма жизни всех: " + sm.sumOfHealth());
+        getUserHandler().writeln("Сумма жизни всех: " + sm.sumOfHealth());
         return true;
     }
 

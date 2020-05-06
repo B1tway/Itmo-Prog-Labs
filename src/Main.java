@@ -28,12 +28,11 @@ public class Main {
                 while (true) handler.next();
             case ("server"):
                 Server server = new Server(handler);
-                server.run(5959);
+                server.run(5659);
                 break;
             case ("client"):
                 Client client = new Client(handler);
-                client.connect("host",5656);
-                client.run();
+                client.run("host",5656);
         }
 //        handler.getSpaceManager().getSortedCollection();
 //        handler.getCmdManeger().getCommand("load").execute(null);

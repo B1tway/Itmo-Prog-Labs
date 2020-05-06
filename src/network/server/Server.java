@@ -35,6 +35,7 @@ public class Server {
         try {
             server = new ServerSocket(port);
             running = true;
+            System.out.println("Сервер запущен");
         } catch (IOException exp) {
             System.out.println("Не удалось запустить сервер с даннам портом");
         }
@@ -42,6 +43,7 @@ public class Server {
 
     private void stopServer() throws IOException {
         running = false;
+        handler.getCmdManeger().getCommand("save");
         server.close();
     }
 
@@ -50,28 +52,33 @@ public class Server {
         while (running) {
             try {
                 Socket socket = server.accept();
-
+                System.out.println("Полезователь подключился");
                 while (socket.isConnected()) {
                     try {
 
                         Command cmd = readCmd(socket);
+                        System.out.println("Пользователь запустил команду" + cmd.getCommandName());
                         executeCommand(cmd);
-                    } catch (Exception exp) {
-                        System.out.println("Ошибка запроса");
-                        sendResponse(socket, getResponse(new Response("empty")));
+                        System.out.println("Команда заверщена");
+                    } catch (IOException exp) {
+                        System.out.println("Полезователь отключился");
+                        handler.getCmdManeger().getCommand("save");
+                        sendResponse(socket, getResponse(new Response("")));
                         System.exit(0);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
                     try {
                         String message = out.toString();
-                        System.out.println(message);
                         Response answ = new Response(message);
                         sendResponse(socket, getResponse(answ));
+                        System.out.println("Отправлен ответ пользователю");
                         out.close();
                         out = new ByteArrayOutputStream();
                         handler.setPrintWriter(new PrintWriter(out));
                     } catch (Exception exp) {
                         System.out.println("Ошибка ответа");
-                        sendResponse(socket, getResponse(new Response("empty")));
+                        sendResponse(socket, getResponse(new Response("")));
                         exp.printStackTrace();
                         System.exit(0);
                     }
