@@ -37,6 +37,7 @@ public class Server {
     private void startServer(int port) throws IOException {
         try {
             server = new ServerSocket(port);
+            server.setSoTimeout(2000);
             running = true;
             logger.debug("Сервер запущен");
         } catch (IOException exp) {
@@ -48,13 +49,14 @@ public class Server {
         running = false;
         handler.getCmdManeger().getCommand("save");
         server.close();
+        System.exit(0);
     }
 
     public void run(int port) throws IOException {
         startServer(port);
+
         while (running) {
-            try {
-                Socket socket = server.accept();
+            try (Socket socket = server.accept()) {
                 logger.debug("Полезователь подключился");
                 while (socket.isConnected()) {
                     try {
@@ -65,9 +67,7 @@ public class Server {
                         logger.debug("Команда заверщена");
                     } catch (IOException exp) {
                         logger.debug("Полезователь отключился");
-                        handler.getCmdManeger().getCommand("save");
-                        logger.debug("Коллекция сохранена");
-                        sendResponse(socket, getResponse(new Response("")));
+                        break;
                     } catch (ClassNotFoundException e) {
                         logger.debug("Пришел неизвестный класс");
                     }
@@ -81,17 +81,16 @@ public class Server {
                         handler.setPrintWriter(new PrintWriter(out));
                     } catch (Exception exp) {
                         logger.debug("Ошибка ответа");
-                        sendResponse(socket, getResponse(new Response("")));
                         exp.printStackTrace();
                         System.exit(0);
                     }
-
+                    runCli();
 
                 }
             } catch (IOException exp) {
-                System.out.println(exp.getMessage());
-
+                runCli();
             }
+
 
         }
     }
@@ -130,6 +129,11 @@ public class Server {
     private void sendResponse(Socket socket, byte[] bytes) throws IOException {
         socket.getOutputStream().write(bytes);
     }
-
+    private void runCli() throws IOException {
+        handler.setPrintWriter(new PrintWriter(System.out));
+        Command cmd = handler.nextCommand();
+        executeCommand(cmd);
+        handler.setPrintWriter(new PrintWriter(out));
+    }
 
 }
