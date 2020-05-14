@@ -26,6 +26,7 @@ public class Handler {
     private boolean interactive = true;
     private int stackSize = 1000;
     private Set<String> files;
+    private boolean isEmptyInput = false;
 
     /**
      * Instantiates a new User handler.
@@ -48,6 +49,10 @@ public class Handler {
      */
     public void setInteractive(boolean interactive) {
         this.interactive = interactive;
+    }
+
+    public boolean isEmptyInput() {
+        return isEmptyInput;
     }
 
     /**
@@ -83,9 +88,18 @@ public class Handler {
         return cmdManeger.getCommand(cmd, args);
     }
 
+    public Command nextCommand(long time) throws IOException {
+        String[] args = readCommand(time);
+        if (args.length == 0) return new EmptyCommand();
+        String cmd = args[0];
+        args = Arrays.copyOfRange(args, 1, args.length);
+        return cmdManeger.getCommand(cmd, args);
+    }
+
     public Set<String> getFiles() {
         return files;
     }
+
 
     /**
      * Read command string [ ].
@@ -98,6 +112,32 @@ public class Handler {
         StringTokenizer st = null;
         try {
             str = scanner.nextLine();
+            st = new StringTokenizer(str);
+
+        } catch (NoSuchElementException exp) {
+            System.out.println("Bye bye");
+            System.exit(0);
+
+        }
+
+        while (st.hasMoreTokens()) list.add(st.nextToken());
+        String[] args = list.toArray(new String[list.size()]);
+        return args;
+
+    }
+
+    public String[] readCommand(long time) {
+        isEmptyInput = false;
+        List<String> list = new ArrayList<>();
+        String str = null;
+        StringTokenizer st = null;
+        long end = System.currentTimeMillis() + time;
+        try {
+            while (System.currentTimeMillis() < end && str == null) str = scanner.nextLine();
+            if (str == null) {
+                str = "";
+                isEmptyInput = true;
+            }
             st = new StringTokenizer(str);
 
         } catch (NoSuchElementException exp) {

@@ -131,8 +131,8 @@ public class Server {
     }
     private void runCli() throws IOException {
         handler.setPrintWriter(new PrintWriter(System.out));
-        Command cmd = handler.nextCommand();
-        executeCommand(cmd);
+        Command cmd = handler.nextCommand(4000);
+        if (!handler.isEmptyInput()) executeCommand(cmd);
         handler.setPrintWriter(new PrintWriter(out));
     }
 
