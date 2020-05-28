@@ -27,6 +27,15 @@ public class Handler {
     private int stackSize = 1000;
     private Set<String> files;
     private boolean isEmptyInput = false;
+    private DataBaseManager dataBaseManager;
+
+    public void setDataBaseManager(DataBaseManager dataBaseManager) {
+        this.dataBaseManager = dataBaseManager;
+    }
+
+    public DataBaseManager getDataBaseManager() {
+        return dataBaseManager;
+    }
 
     /**
      * Instantiates a new User handler.
@@ -35,7 +44,6 @@ public class Handler {
         this.scanner = new Scanner(System.in);
         this.printWriter = new PrintWriter(System.out);
         this.cmdManeger = new CommandManager();
-        this.csvLoader = new CSVLoader("data.csv");
         cmdManeger.setHandler(this);
         this.spaceManager = new SpaceManager();
         spaceManager.setHandler(this);
@@ -187,7 +195,10 @@ public class Handler {
         return new SpaceMarine(name, coordinates, healt, category, weapon, meleeWeapon, chapter);
 
     }
-
+    public void loadCollection() {
+        SpaceStorage storage = dataBaseManager.getCollection();
+        spaceManager.setStorage(storage);
+    }
     /**
      * Read category astartes category.
      *
@@ -204,6 +215,10 @@ public class Handler {
 
         } while (!isCategory(input) && !(input == null));
         return result;
+    }
+    public void execute(Command cmd) throws IOException {
+        cmd.setCmdManager(cmdManeger);
+        cmd.execute(cmd.getArgs());
     }
 
     /**

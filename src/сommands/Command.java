@@ -1,5 +1,6 @@
 package сommands;
 
+import network.client.User;
 import utils.Handler;
 import сollection.SpaceManager;
 
@@ -30,7 +31,7 @@ public abstract class Command implements Serializable {
     protected int argsCount = 0;
     protected List<Object> argsObject;
     transient private CommandManager cmdManager;
-
+    protected User user;
     /**
      * Instantiates a new Command.
      *
@@ -117,5 +118,9 @@ public abstract class Command implements Serializable {
 
     public List<Object> getArgsObject() {
         return argsObject;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

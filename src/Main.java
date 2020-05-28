@@ -1,8 +1,11 @@
 import network.client.Client;
 import network.server.Server;
+import utils.DataBaseManager;
 import utils.Handler;
+import сommands.Command;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * The type Main.
@@ -19,16 +22,26 @@ public class Main {
      * @throws IOException the io exception
      */
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, SQLException {
 
         Handler handler = new Handler();
         String mode = handler.readLineWithMessage("Режим", false).toLowerCase();
         switch (mode) {
             case ("cli"):
-                while (true) handler.next();
+                DataBaseManager man = new DataBaseManager();
+                handler.setDataBaseManager(man);
+                handler.loadCollection();
+                while (true) {
+                    Command cmd = handler.nextCommand();
+                    handler.execute(cmd);
+                }
             case ("server"):
                 int port = handler.readInt("Введите порт",false);
+                DataBaseManager manager = new DataBaseManager();
                 Server server = new Server(handler);
+                handler.setDataBaseManager(manager);
+                handler.loadCollection();
+
                 server.run(port);
                 break;
             case ("client"):
@@ -37,6 +50,7 @@ public class Main {
                 Client client = new Client(handler);
                 client.run(host,portClient);
         }
+
 //        handler.getSpaceManager().getSortedCollection();
 //        handler.getCmdManeger().getCommand("load").execute(null);
 //        while (true) {

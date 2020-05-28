@@ -1,5 +1,7 @@
 package сollection;
 
+import network.client.User;
+
 import java.io.Serializable;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -10,6 +12,7 @@ import java.util.Objects;
  * The type Space marine.
  */
 public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
+    private String user;
     private int id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Coordinates coordinates; //Поле не может быть null
@@ -282,5 +285,14 @@ public class SpaceMarine implements Comparable<SpaceMarine>, Serializable {
         Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return id + separator + name + separator + coordinates.toString() + separator + creationDate.toString() + separator +
                 health + separator + category + separator + weaponType + separator + meleeWeapon + separator + chapter.toString();
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+
+    public String getUserName() {
+        return user;
     }
 }

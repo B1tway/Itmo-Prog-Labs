@@ -17,7 +17,9 @@ public class ShowCommand extends Command {
 
     @Override
     public boolean execute(String[] args) throws IOException {
+
         SpaceManager sm = getCollectionManager();
+        sm.getHandler().loadCollection();
         String header = " key; id; name; Coordinates; Date; health; category; weapon; meleeWeapon; Chapter;";
         getUserHandler().writeln(header);
         sm.show();

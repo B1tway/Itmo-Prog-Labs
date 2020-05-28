@@ -76,11 +76,11 @@ public class SpaceManager implements StorageManager {
 
     @Override
     public void update(int id, SpaceMarine spaceMarine) {
-        storage.toValueStream().filter(x -> x.getId() == id).forEach(i -> {
-            String key = findKey(i);
-            this.remove(key);
-            this.insert(key, spaceMarine);
-        });
+        if(handler.getDataBaseManager().update(id,spaceMarine) > 0) {
+            String key = findKey(findById(id));
+            spaceMarine.setId(id);
+            storage.put(key,spaceMarine);
+        }
     }
 
     @Override
@@ -116,6 +116,7 @@ public class SpaceManager implements StorageManager {
      * @param key the key
      */
     public void remove(String key) {
+        if(handler.getDataBaseManager().removeByKey(key) > 0)
         storage.remove(key);
     }
 
@@ -193,6 +194,8 @@ public class SpaceManager implements StorageManager {
      * @param spaceMarine the space marine
      */
     public void insert(String key, SpaceMarine spaceMarine) {
+
+        if(handler.getDataBaseManager().insertSpaceMarine(key,spaceMarine))
         storage.put(key, spaceMarine);
         storage.update();
     }

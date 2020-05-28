@@ -22,7 +22,7 @@ public class Server {
 
     public Server(Handler handler) throws IOException {
         setHandler(handler);
-        handler.getCmdManeger().getCommand("load").execute(null);
+        handler.loadCollection();
         out = new ByteArrayOutputStream();
         logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         handler.setPrintWriter(new PrintWriter(out));
