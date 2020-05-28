@@ -1,5 +1,6 @@
 package сommands;
 
+import network.client.User;
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
 
@@ -34,16 +35,20 @@ public class InsertCommand extends Command {
         SpaceMarine spaceMarine = null;
         if (argsObject.size() == 0) spaceMarine = sm.getHandler().readSpaceMarine();
         spaceMarine = (SpaceMarine) argsObject.get(0);
-
-        sm.insert(key, spaceMarine);
-        getUserHandler().writeln("Элемент вставлен");
-        return true;
+        if(spaceMarine.getUserName().equals(getUser().getName())) {
+            sm.insert(key, spaceMarine);
+            getUserHandler().writeln("Элемент вставлен");
+            return true;
+        }
+        getUserHandler().writeln("Это не ваш обьект");
+        return false;
     }
 
     @Override
     public void readArgs() {
         argsObject.clear();
         SpaceMarine marine = getUserHandler().readSpaceMarine();
+        if(user != null) marine.setUser(getUser().getName());
         argsObject.add(marine);
 
     }

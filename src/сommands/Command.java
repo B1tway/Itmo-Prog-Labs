@@ -88,6 +88,10 @@ public abstract class Command implements Serializable {
         return cmdManager;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     /**
      * Sets cmd manager.
      *

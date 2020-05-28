@@ -1,6 +1,8 @@
 package сollection;
 
+import network.client.User;
 import utils.Handler;
+import сommands.Command;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,7 @@ import java.util.stream.Collectors;
 public class SpaceManager implements StorageManager {
     private SpaceStorage storage;
     private Handler handler;
-
+    private Command currentComand;
     /**
      * Instantiates a new Space manager.
      *
@@ -21,6 +23,10 @@ public class SpaceManager implements StorageManager {
      */
     public SpaceManager(SpaceStorage storage) {
         this.storage = storage;
+    }
+
+    public void setCurrentComand(Command currentComand) {
+        this.currentComand = currentComand;
     }
 
     /**
@@ -119,7 +125,10 @@ public class SpaceManager implements StorageManager {
         if(handler.getDataBaseManager().removeByKey(key) > 0)
         storage.remove(key);
     }
-
+    public void remove(String key, String userName) {
+        if( findOwner(key).equals(userName) && handler.getDataBaseManager().removeByKey(key) > 0)
+            storage.remove(key);
+    }
     @Override
     public boolean removeLowerKey(String key) {
         storage.toKeyStream().filter(x -> x.compareTo(key) < 0).forEach(this::remove);
@@ -207,5 +216,14 @@ public class SpaceManager implements StorageManager {
      */
     public SpaceMarine[] getMarines() {
         return storage.toArray();
+    }
+    public String findOwner(int id) {
+        return findById(id).getUserName();
+    }
+    public String findOwner(String key) {
+        return storage.get(key).getUserName();
+    }
+    public User getCurrentUser() {
+        return currentComand.getUser();
     }
 }

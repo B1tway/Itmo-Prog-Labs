@@ -4,10 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Handler;
 import сommands.Command;
+import сommands.EmptyCommand;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 
 
 public class Server {
@@ -18,10 +24,14 @@ public class Server {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private OutputStream out;
+    private InputStream in;
+    private ArrayList<Session> sessions;
+    private static ForkJoinPool executor;
 
     public Server(Handler handler) throws IOException {
         setHandler(handler);
         handler.loadCollection();
+        executor = new ForkJoinPool(2);
         out = new ByteArrayOutputStream();
         logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         handler.setPrintWriter(new PrintWriter(out));
@@ -36,6 +46,7 @@ public class Server {
     private void startServer(int port) throws IOException {
         try {
             server = new ServerSocket(port);
+            sessions = new ArrayList<>();
             server.setSoTimeout(2000);
             running = true;
             logger.debug("Сервер запущен");
@@ -53,70 +64,45 @@ public class Server {
 
     public void run(int port) throws IOException {
         startServer(port);
-
+        Callable<Socket> socketCallable = getTaskSocket(server);
         while (running) {
-            try (Socket socket = server.accept()) {
-                logger.debug("Полезователь подключился");
-                while (socket.isConnected()) {
-                    try {
+            try {
+                Future<Socket> socketFuture = executor.submit(socketCallable);
 
-                        Command cmd = readCmd(socket);
-                        logger.debug("Пользователь запустил команду" + cmd.getCommandName());
-                        executeCommand(cmd);
-                        logger.debug("Команда заверщена");
-                    } catch (IOException exp) {
-                        logger.debug("Полезователь отключился");
-                        break;
-                    } catch (ClassNotFoundException e) {
-                        logger.debug("Пришел неизвестный класс");
-                    }
-                    try {
-                        String message = out.toString();
-                        Response answ = new Response(message);
-                        sendResponse(socket, getResponse(answ));
-                        logger.debug("Отправлен ответ пользователю");
-                        out.close();
-                        out = new ByteArrayOutputStream();
-                        handler.setPrintWriter(new PrintWriter(out));
-                    } catch (Exception exp) {
-                        logger.debug("Ошибка ответа");
-                        exp.printStackTrace();
-                        System.exit(0);
-                    }
-                    runCli();
-
-                }
-            } catch (IOException exp) {
-                runCli();
             }
+            catch (Exception exp) {
+                exp.printStackTrace();
+            }
+
+
 
 
         }
     }
 
 
-    private Command readCommand(Socket socket) throws IOException, ClassNotFoundException {
-
-        Command cmd = (Command) objectInputStream.readObject();
+    private Command readCmd(Socket socket) {
+        Command cmd = new EmptyCommand();
+        try {
+            InputStream socketInput = socket.getInputStream();
+            ObjectInputStream inputStream = new ObjectInputStream(socketInput);
+            cmd = (Command) inputStream.readObject();
+        } catch (IOException | ClassNotFoundException exp) {
+            exp.printStackTrace();
+        }
         return cmd;
     }
 
-    private Command readCmd(Socket socket) throws IOException, ClassNotFoundException {
-        InputStream socketInput = socket.getInputStream();
-        ObjectInputStream inputStream = new ObjectInputStream(socketInput);
-        Command cmd = (Command) inputStream.readObject();
-        return cmd;
+    private boolean executeCommand(Command cmd) {
+        try {
+            cmd.setCmdManager(handler.getCmdManeger());
+            return cmd.execute(cmd.getArgs());
+        } catch (IOException exp) {
+            exp.printStackTrace();
+            return false;
+        }
     }
 
-    private void executeCommand(Command cmd) throws IOException {
-        cmd.setCmdManager(handler.getCmdManeger());
-        cmd.execute(cmd.getArgs());
-    }
-
-    private void sendResponse(Socket socket, Response response) throws IOException {
-        objectOutputStream.writeObject(response);
-        objectOutputStream.flush();
-    }
 
     private byte[] getResponse(Response response) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -128,11 +114,33 @@ public class Server {
     private void sendResponse(Socket socket, byte[] bytes) throws IOException {
         socket.getOutputStream().write(bytes);
     }
+
     private void runCli() throws IOException {
-        handler.setPrintWriter(new PrintWriter(System.out));
-        Command cmd = handler.nextCommand(4000);
-        if (!handler.isEmptyInput()) executeCommand(cmd);
-        handler.setPrintWriter(new PrintWriter(out));
+//        handler.setPrintWriter(new PrintWriter(System.out));
+//        Command cmd = handler.nextCommand(4000);
+//        if (!handler.isEmptyInput()) executeCommand(cmd);
+//        handler.setPrintWriter(new PrintWriter(out));
+    }
+
+    private Callable<Command> getTaskCommand(Socket socket) {
+        return () -> {
+            InputStream socketInput = socket.getInputStream();
+            ObjectInputStream inputStream = new ObjectInputStream(socketInput);
+            Command cmd = (Command) inputStream.readObject();
+            return cmd;
+        };
+    }
+    private Callable<Socket> getTaskSocket(ServerSocket server) {
+        return () -> {
+            return server.accept();
+        };
+    }
+
+    private Runnable getTask(Socket socket) {
+        return () -> {
+            Command cmd = readCmd(socket);
+            executeCommand(cmd);
+        };
     }
 
 

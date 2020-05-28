@@ -25,8 +25,13 @@ public class RemoveLowerKeyCommand extends Command {
             getUserHandler().writeln("Неверные параметры, введите ключ");
             return true;
         }
+        String owner = getCollectionManager().findOwner(key);
+        if(owner.equals(getUser().getName())) {
+            return sm.removeLowerKey(key);
+        }
+        getUserHandler().writeln("Это не ваш обьект");
+        return false;
 
-        return sm.removeLowerKey(key);
 
     }
 }

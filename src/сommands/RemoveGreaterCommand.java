@@ -1,5 +1,6 @@
 package сommands;
 
+import network.client.User;
 import сollection.SpaceManager;
 import сollection.SpaceMarine;
 

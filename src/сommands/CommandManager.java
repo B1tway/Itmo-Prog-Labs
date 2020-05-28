@@ -31,10 +31,11 @@ public class CommandManager {
         addCommand(new RemoveGreaterCommand());
         addCommand(new FilterByCategoryCommand());
         addCommand(new CountGreaterThanWeaponTypeCommand());
-        addCommand(new SaveCommand());
         addCommand(new LoadCommand());
         addCommand(new ExecuteCommand());
         addCommand(new ExitCommand());
+        addCommand(new LoginCommand());
+        addCommand(new RegisterCommand());
 
     }
 

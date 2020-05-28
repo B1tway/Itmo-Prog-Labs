@@ -23,6 +23,8 @@ public class Client {
     private ObjectOutputStream objectOutputStream;
     private String currentHost;
     private int currentPort;
+    private Command currentCommand;
+    private User user;
 
     public Client(Handler handler) {
         buffer = ByteBuffer.allocate(2048);
@@ -44,6 +46,7 @@ public class Client {
             System.exit(0);
         }
 
+
     }
 
     public void run(String host, int port) throws IOException, ClassNotFoundException, InterruptedException {
@@ -53,6 +56,9 @@ public class Client {
                 sendData(write());
                 Thread.sleep(30);
                 Response response = readData();
+                if (response.getCmdRes() && (currentCommand.getCommandName().equals("login") || currentCommand.getCommandName().equals("register"))) {
+                    user = currentCommand.getUser();
+                }
                 String message = parseServerAnswer(response);
                 handler.writeln(message);
             } catch (IOException exp) {
@@ -132,6 +138,8 @@ public class Client {
 
     private byte[] write() throws IOException {
         Command cmd = handler.nextCommand();
+        currentCommand = cmd;
+        if(cmd.getUser() == null && user != null) cmd.setUser(user);
         if (cmd.getCommandName().equals("exit")) {
             System.out.println("Завершение работы");
             System.exit(0);

@@ -1,25 +1,23 @@
 package сommands;
 
-import network.client.User;
 import utils.DataBaseManager;
 
 import java.io.IOException;
 
-public class LoginCommand extends Command {
-    protected LoginCommand() {
-        super("login","");
+public class RegisterCommand extends Command {
+
+    protected RegisterCommand() {
+        super("register","");
     }
-
-
 
     @Override
     public boolean execute(String[] args) throws IOException {
         DataBaseManager dbManager = getUserHandler().getDataBaseManager();
-        if (dbManager.containsUser(user)) {
-            getUserHandler().writeln("Вы успешно авторизовались");
+        if(dbManager.addUser(user)) {
+            getUserHandler().writeln("Вы успешно зарегестрировались");
             return true;
         }
-        getUserHandler().writeln("Неверный логин или пароль");
+        getUserHandler().writeln("Ошибка регистрации");
         return false;
     }
 

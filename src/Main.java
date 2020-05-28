@@ -39,9 +39,9 @@ public class Main {
             case ("server"):
                 int port = handler.readInt("Введите порт",false);
                 DataBaseManager manager = new DataBaseManager();
-                Server server = new Server(handler);
                 handler.setDataBaseManager(manager);
-                handler.loadCollection();
+                Server server = new Server(handler);
+
 
                 server.run(port);
                 break;

@@ -20,7 +20,7 @@ public class DataBaseManager {
     private static final String USERS_TABLE = "users";
     private Connection connection;
     private PassEncoder passEncoder;
-    private String pepper = "as56a1273bosg";
+    private String pepper = "af56a";
     static {
 //        Scanner scanner = new Scanner(System.in);
 //        USER = scanner.nextLine();
@@ -57,7 +57,7 @@ public class DataBaseManager {
         this(DB_URL, USER, PASS);
     }
     public boolean addUser(User user) {
-        String salt = new RandomStringGenerator().generate(12, 12);
+        String salt = new RandomStringGenerator().generate(6, 6);
         String hash = passEncoder.getHash(user.getPass() + salt);
         try {
             PreparedStatement statement = connection.prepareStatement("insert into " + USERS_TABLE + " values (?, ?, ?)");
@@ -103,8 +103,7 @@ public class DataBaseManager {
             byte[] bytes = mariteToBytes(marine);
             PreparedStatement statement = connection.prepareStatement("insert into " + TABLE_NAME + " values (?, ?, ?, ?)");
             statement.setInt(1, (int) id);
-//            statement.setString(2,marine.getUserName());
-            statement.setString(2, "USER");
+            statement.setString(2,marine.getUserName());
             statement.setBinaryStream(3, new ByteArrayInputStream(bytes), bytes.length);
             statement.setString(4, key);
             statement.execute();

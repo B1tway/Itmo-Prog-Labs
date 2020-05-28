@@ -24,16 +24,22 @@ public class UpdateCommand extends Command {
             id = Integer.parseInt(args[0]);
         } catch (ArrayIndexOutOfBoundsException | NumberFormatException exp) {
             getUserHandler().writeln("Неверные параметры, введите id");
-            return true;
+            return false;
         }
         if (!sm.containsId(id)) {
             getUserHandler().writeln("Элемента с таким id нет в коллекции");
-            return true;
+            return false;
         }
         SpaceMarine marine = (SpaceMarine) argsObject.get(0);
-        sm.update(id, marine);
-        getUserHandler().writeln("Обьект обновлен");
-        return true;
+        if(marine.getUserName().equals(getUser().getName())) {
+            sm.update(id, marine);
+            getUserHandler().writeln("Обьект обновлен");
+            return true;
+        }
+        else {
+            getUserHandler().writeln("Это не ваш обьект");
+        }
+        return false;
     }
 
     @Override

@@ -28,8 +28,15 @@ public class ReplaceIfGreaterCommand extends Command {
         }
 
         SpaceMarine spaceMarine = (SpaceMarine) argsObject.get(0);
-        sm.replaceIfGreaterThan(key, spaceMarine);
-        return true;
+        if(spaceMarine.getUserName().equals(getUser().getName())) {
+            sm.replaceIfGreaterThan(key, spaceMarine);
+            getUserHandler().writeln("Элемент заменен");
+            return true;
+        }
+        getUserHandler().writeln("Это не ваш обьект");
+        return false;
+
+
     }
 
     @Override
