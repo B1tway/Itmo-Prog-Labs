@@ -1,5 +1,6 @@
 package utils;
 
+import network.client.User;
 import сollection.SpaceMarine;
 import сollection.SpaceStorage;
 
@@ -17,7 +18,9 @@ public class DataBaseManager {
     private static String PASS = "argsf031";
     private static final String TABLE_NAME = "collection";
     private static final String USERS_TABLE = "users";
-
+    private Connection connection;
+    private PassEncoder passEncoder;
+    private String pepper = "as56a1273bosg";
     static {
 //        Scanner scanner = new Scanner(System.in);
 //        USER = scanner.nextLine();
@@ -32,9 +35,9 @@ public class DataBaseManager {
         }
     }
 
-    private Connection connection;
 
     public DataBaseManager(String dataBaseUrl, String user, String pass) throws IOException {
+        passEncoder = new PassEncoder(pepper);
         byteOutput = new ByteArrayOutputStream();
         byteInput = new ByteArrayInputStream(byteOutput.toByteArray());
         output = new ObjectOutputStream(byteOutput);
@@ -52,6 +55,40 @@ public class DataBaseManager {
 
     public DataBaseManager() throws IOException {
         this(DB_URL, USER, PASS);
+    }
+    public boolean addUser(User user) {
+        String salt = new RandomStringGenerator().generate(12, 12);
+        String hash = passEncoder.getHash(user.getPass() + salt);
+        try {
+            PreparedStatement statement = connection.prepareStatement("insert into " + USERS_TABLE + " values (?, ?, ?)");
+            statement.setString(1, user.getName());
+            statement.setString(2, hash);
+            statement.setString(3, salt);
+            statement.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+    public boolean containsUser(User user) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("select * from " + USERS_TABLE + " where name = ?");
+            statement.setString(1, user.getName());
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) return false;
+            String salt = resultSet.getString(3);
+            String hash = passEncoder.getHash(user.getPass() + salt);
+            statement = connection.prepareStatement("select * from " + USERS_TABLE + " where name = ? and password = ? and salt=?");
+            statement.setString(1, user.getName());
+            statement.setString(2, hash);
+            statement.setString(3, salt);
+            return statement.executeQuery().next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public Connection getConnection() {
@@ -128,7 +165,8 @@ public class DataBaseManager {
             byte[] bytes = mariteToBytes(marine);
             statement.setBinaryStream(1, new ByteArrayInputStream(bytes), bytes.length);
             statement.setLong(2,id);
-            return statement.executeUpdate();
+            statement.executeUpdate();
+            return 1;
         } catch (SQLException | IOException e) {
             e.printStackTrace();
             return 0;

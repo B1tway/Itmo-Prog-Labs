@@ -1,6 +1,6 @@
 package network.client;
 
-import network.Response;
+import network.server.Response;
 import utils.Handler;
 import сommands.Command;
 import сommands.EmptyCommand;

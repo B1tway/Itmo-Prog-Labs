@@ -1,6 +1,5 @@
 package network.server;
 
-import network.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Handler;
@@ -135,5 +134,6 @@ public class Server {
         if (!handler.isEmptyInput()) executeCommand(cmd);
         handler.setPrintWriter(new PrintWriter(out));
     }
+
 
 }

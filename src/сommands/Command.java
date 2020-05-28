@@ -25,13 +25,13 @@ public abstract class Command implements Serializable {
      * The Help text.
      */
     transient protected String helpText;
+    protected User user;
     /**
      * The Args count.
      */
     protected int argsCount = 0;
     protected List<Object> argsObject;
     transient private CommandManager cmdManager;
-    protected User user;
     /**
      * Instantiates a new Command.
      *
@@ -52,7 +52,10 @@ public abstract class Command implements Serializable {
      * @throws IOException the io exception
      */
     public abstract boolean execute(String args[]) throws IOException;
+    public void setUser(String userName, String pass) {
+        user = new User(userName, pass);
 
+    }
     public String[] getArgs() {
         return args;
     }
