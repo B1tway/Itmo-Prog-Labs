@@ -1,11 +1,13 @@
 package network.server;
 
+import network.client.User;
+
 import java.io.Serializable;
 
 public class Response implements Serializable {
     private byte[] data;
     private int size;
-    private boolean cmdRes = false;
+    private User user;
 
     public Response(byte[] data) {
         this.data = data;
@@ -16,12 +18,14 @@ public class Response implements Serializable {
     public Response(String message) {
         this(message.getBytes());
     }
-    public boolean getCmdRes() {
-        return cmdRes;
+    public User getUser() {
+        return user;
     }
-    public void setCmdRes(boolean value) {
-        this.cmdRes = value;
+
+    public void setUser(User user) {
+        this.user = user;
     }
+
     public byte[] getData() {
         return data;
     }

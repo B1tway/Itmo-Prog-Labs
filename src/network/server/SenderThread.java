@@ -3,6 +3,7 @@ package network.server;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class SenderThread extends Thread {
     private Socket socket;
@@ -15,14 +16,16 @@ public class SenderThread extends Thread {
     @Override
     public void run() {
         try {
-            sendResponse(socket, response);
+            if (!socket.isClosed()) sendResponse(socket, response);
         } catch (IOException e) {
              e.printStackTrace();
         }
 
+
     }
 
     private void sendResponse(Socket socket, Response response) throws IOException {
+
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         objectOutputStream.writeObject(response);
     }

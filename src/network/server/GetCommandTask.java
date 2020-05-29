@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.Callable;
 
 public class GetCommandTask implements Callable<Command> {
@@ -15,14 +16,14 @@ public class GetCommandTask implements Callable<Command> {
         this.socket = socket;
     }
     @Override
-    public Command call() throws Exception {
+    public Command call() throws IOException {
         Command cmd = new EmptyCommand();
         try {
             InputStream socketInput = socket.getInputStream();
             ObjectInputStream inputStream = new ObjectInputStream(socketInput);
             cmd = (Command) inputStream.readObject();
         } catch (IOException | ClassNotFoundException exp) {
-            exp.printStackTrace();
+            socket.close();
         }
 
         return cmd;

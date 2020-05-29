@@ -8,6 +8,13 @@ public class Session {
     private User user;
     private boolean right = false;
 
+    public Session() {
+        user = null;
+        right = false;
+    }
+    public boolean getRight() {
+        return right;
+    }
     public void setRight(boolean right) {
         this.right = right;
     }

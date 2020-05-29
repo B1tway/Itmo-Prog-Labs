@@ -57,7 +57,6 @@ public class Server {
 
     public void run(int port) throws IOException, ExecutionException, InterruptedException {
         startServer(port);
-        Socket cur = null;
         Socket socket = null;
         while (running) {
             try {

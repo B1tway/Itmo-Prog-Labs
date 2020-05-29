@@ -1,5 +1,6 @@
 package network.server;
 
+import network.client.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Handler;
@@ -16,13 +17,14 @@ public class ConnectionThread extends Thread {
     ExecutorService executorService;
     Socket socket;
     Handler handler;
-    ForkJoinPool pool;
+
     Logger logger;
+    Session session;
     public ConnectionThread(ExecutorService executorService, Socket socket, Handler handler) {
         this.executorService = executorService;
         this.socket = socket;
         this.handler = handler;
-        pool = new ForkJoinPool();
+        session = new Session();
         logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     }
 
@@ -49,16 +51,27 @@ public class ConnectionThread extends Thread {
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-            ExecutorTask exe = new ExecutorTask(handler,cmd);
-            Future<String> messageFuture = executorService.submit(exe);
             String message = null;
-            try {
-                message = messageFuture.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            if(session.getRight() || cmd.getCommandName().equals("login") || cmd.getCommandName().equals("register")) {
+                ExecutorTask exe = new ExecutorTask(handler, cmd);
+                Future<String> messageFuture = executorService.submit(exe);
+                try {
+                    message = messageFuture.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
+            else {
+                message = "У вас нет прав, авторизуйтесь";
+            }
+            Response response = new Response(message);
+            if (message.equals("Вы успешно авторизовались\n")) {
+                session.setUser(cmd.getUser());
+                session.setRight(true);
+            }
+            response.setUser(session.getUser());
             new SenderThread(socket, new Response(message)).start();
 //            Runnable task = new QueryTask(socket, handler);
 //            executorService.execute(task);
@@ -66,5 +79,6 @@ public class ConnectionThread extends Thread {
 //                ExecutorTask executorTask = new ExecutorTask(socket, handler, cmd);
 //                executorService.submit(executorTask);
         }
+        logger.debug("Пользователь отключился");
     }
 }

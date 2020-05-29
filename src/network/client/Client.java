@@ -54,11 +54,11 @@ public class Client {
             try {
                 sendData(write());
                 Response response = readData();
-                if (response.getCmdRes() && (currentCommand.getCommandName().equals("login") || currentCommand.getCommandName().equals("register"))) {
-                    user = currentCommand.getUser();
-                }
                 String message = parseServerAnswer(response);
                 handler.writeln(message);
+                if(message.equals("Вы успешно авторизовались\n")) {
+                    user = response.getUser();
+                }
             } catch (IOException exp) {
 
                 System.out.println("Соединение потеряно");
@@ -135,7 +135,7 @@ public class Client {
     private byte[] write() throws IOException {
         Command cmd = handler.nextCommand();
         currentCommand = cmd;
-        if (cmd.getUser() == null && user != null) cmd.setUser(user);
+        if (user != null) cmd.setUser(user);
         if (cmd.getCommandName().equals("exit")) {
             System.out.println("Завершение работы");
             System.exit(0);
