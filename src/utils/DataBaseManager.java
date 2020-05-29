@@ -6,14 +6,15 @@ import сollection.SpaceStorage;
 
 import java.io.*;
 import java.sql.*;
+import java.util.Scanner;
 
 public class DataBaseManager {
-    //    private static final String DB_URL = "jdbc:postgresql://pg:5432/studs";
+        private static final String DB_URL = "jdbc:postgresql://pg:5432/studs";
     private ObjectInputStream input;
     private ByteArrayInputStream byteInput;
     private ByteArrayOutputStream byteOutput;
     private ObjectOutputStream output;
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+//    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static String USER = "postgres";
     private static String PASS = "argsf031";
     private static final String TABLE_NAME = "collection";
@@ -22,9 +23,10 @@ public class DataBaseManager {
     private PassEncoder passEncoder;
     private String pepper = "af56a";
     static {
-//        Scanner scanner = new Scanner(System.in);
-//        USER = scanner.nextLine();
-//        PASS = scanner.nextLine();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите логин и пароль");
+        USER = scanner.nextLine().trim();
+        PASS = scanner.nextLine().trim();
         System.out.println("Connection to PostgreSQL JDBC");
         try {
             Class.forName("org.postgresql.Driver");
@@ -43,6 +45,9 @@ public class DataBaseManager {
         output = new ObjectOutputStream(byteOutput);
         try {
             connection = DriverManager.getConnection(dataBaseUrl, user, pass);
+            System.out.println("Connection to database successful");
+//            PreparedStatement statement = connection.prepareStatement(sqlInstallCommit);
+//            statement.execute();
         } catch (SQLException e) {
             System.out.println("Connection to database failed");
 //            e.printStackTrace();
@@ -90,7 +95,7 @@ public class DataBaseManager {
             return false;
         }
     }
-
+//    String sqlInstallCommit =  "CREATE TABLE collection ( id bigint PRIMARY KEY, owner CHARACTER VARYING(40), marine BYTEA, key CHARACTER VARYING(50) ); CREATE TABLE users ( name CHARACTER VARYING(40) PRIMARY KEY, password CHARACTER VARYING(300), salt CHARACTER VARYING(20) ); CREATE SEQUENCE ids;";
     public Connection getConnection() {
         return connection;
     }
@@ -134,6 +139,10 @@ public class DataBaseManager {
         }
         catch (SQLException | IOException | ClassNotFoundException exp) {
             exp.printStackTrace();
+        }
+        catch (NullPointerException exp) {
+            System.out.println("БД не доступна");
+            System.exit(0);
         }
         return spaceStorage;
     }
