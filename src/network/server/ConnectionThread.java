@@ -34,6 +34,7 @@ public class ConnectionThread extends Thread {
             GetCommandTask task = new GetCommandTask(socket);
             Future<Command> cmdFuture = executorService.submit(task);
             Command cmd = new EmptyCommand();
+            if(cmd.getUser() != null) session.setUser(cmd.getUser());
             try {
                 cmd = cmdFuture.get();
             } catch (InterruptedException e) {
@@ -53,6 +54,7 @@ public class ConnectionThread extends Thread {
 //            }
             String message = null;
             if(session.getRight() || cmd.getCommandName().equals("login") || cmd.getCommandName().equals("register")) {
+                session.setUser(cmd.getUser());
                 ExecutorTask exe = new ExecutorTask(handler, cmd, session.getUser());
                 Future<String> messageFuture = executorService.submit(exe);
                 try {
@@ -72,7 +74,7 @@ public class ConnectionThread extends Thread {
                 session.setRight(true);
             }
             response.setUser(session.getUser());
-            new SenderThread(socket, new Response(message)).start();
+            new SenderThread(socket, response).start();
 //            Runnable task = new QueryTask(socket, handler);
 //            executorService.execute(task);
 

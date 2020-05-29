@@ -1,5 +1,6 @@
 package сommands;
 
+import network.client.User;
 import сollection.SpaceManager;
 
 import java.io.IOException;
@@ -23,15 +24,9 @@ public class RemoveKeyCommand extends Command {
             key = args[0];
         } catch (ArrayIndexOutOfBoundsException exp) {
             getUserHandler().writeln("Неверные параметры, введите ключ");
-            return true;
+            return false;
         }
-        if(getCollectionManager().findOwner(key).equals(user.getName())) {
-            if (sm.contains(key)) getUserHandler().writeln("Элемент удален успешно");
-            else getUserHandler().writeln("Элемент с таким ключем не существует");
-            sm.remove(key);
-            return true;
-        }
-        getUserHandler().writeln("Это не ваш обьект");
-        return false;
+        sm.remove(key);
+        return true;
     }
 }

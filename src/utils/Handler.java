@@ -1,6 +1,8 @@
 package utils;
 
 import exceptions.InvalidInputException;
+import network.client.User;
+import network.server.Session;
 import сollection.*;
 import сommands.Command;
 import сommands.CommandManager;
@@ -28,7 +30,6 @@ public class Handler {
     private Set<String> files;
     private boolean isEmptyInput = false;
     private DataBaseManager dataBaseManager;
-
     public void setDataBaseManager(DataBaseManager dataBaseManager) {
         this.dataBaseManager = dataBaseManager;
     }
@@ -58,7 +59,9 @@ public class Handler {
     public void setInteractive(boolean interactive) {
         this.interactive = interactive;
     }
-
+    public void setUser(User user) {
+        spaceManager.setCurrentUser(user);
+    }
     public boolean isEmptyInput() {
         return isEmptyInput;
     }
@@ -585,4 +588,6 @@ public class Handler {
     public void writeln(Object object) {
         writeln(object.toString());
     }
+
+
 }

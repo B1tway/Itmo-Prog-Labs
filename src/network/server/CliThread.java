@@ -1,5 +1,6 @@
 package network.server;
 
+import network.client.User;
 import utils.Handler;
 import сommands.Command;
 
@@ -21,6 +22,7 @@ public class CliThread extends Thread {
             handler.setPrintWriter(new PrintWriter(System.out));
             try {
                 Command cmd = handler.nextCommand();
+                cmd.setUser(new User("server", ""));
                 cmd.setCmdManager(handler.getCmdManeger());
                 cmd.execute(cmd.getArgs());
             } catch (IndexOutOfBoundsException exp) {

@@ -14,7 +14,7 @@ public class RegisterCommand extends Command {
     public boolean execute(String[] args) throws IOException {
         DataBaseManager dbManager = getUserHandler().getDataBaseManager();
         if(dbManager.addUser(user)) {
-            getUserHandler().writeln("Вы успешно авторизовались\n");
+            getUserHandler().writeln("Вы успешно авторизовались");
             return true;
         }
         getUserHandler().writeln("Ошибка регистрации");

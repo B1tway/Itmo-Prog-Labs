@@ -31,6 +31,8 @@ public class ExecutorTask implements Callable<String> {
         locker.lock();
         OutputStream outputStream = new ByteArrayOutputStream();
         cmd.setCmdManager(handler.getCmdManeger());
+        handler.setUser(user);
+        System.out.println(user.getName());
         handler.setPrintWriter(new PrintWriter(outputStream));
         try {
             cmd.execute(cmd.getArgs());
