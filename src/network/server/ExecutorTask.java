@@ -9,32 +9,30 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.Callable;
 
-public class ExecutorTask implements Runnable {
-    final Socket socket;
+public class ExecutorTask implements Callable<String> {
     Handler handler;
-    final Command command;
+    final Command cmd;
 
-    public ExecutorTask(Socket socket, Handler handler, Command cmd) {
-        this.socket = socket;
+    public ExecutorTask(Handler handler, Command cmd) {
         this.handler = handler;
-        this.command = cmd;
+        this.cmd = cmd;
     }
 
+
+
     @Override
-    public void run() {
-            try {
-                OutputStream outputStream = new ByteArrayOutputStream();
-                command.setCmdManager(handler.getCmdManeger());
-                handler.setPrintWriter(new PrintWriter(outputStream));
-                command.execute(command.getArgs());
-                String message = outputStream.toString();
-                System.out.println(message);
-                new SenderThread(socket, new Response(message)).start();
-            } catch (IOException exp) {
-                exp.printStackTrace();
-            }
-
-
+    public String call() throws Exception {
+        OutputStream outputStream = new ByteArrayOutputStream();
+        cmd.setCmdManager(handler.getCmdManeger());
+        handler.setPrintWriter(new PrintWriter(outputStream));
+        try {
+            cmd.execute(cmd.getArgs());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String message = outputStream.toString();
+        return message;
     }
 }

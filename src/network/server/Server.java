@@ -9,10 +9,7 @@ import сommands.Command;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 
 public class Server {
@@ -27,7 +24,7 @@ public class Server {
 
     public Server(Handler handler) throws IOException {
         setHandler(handler);
-        pool = Executors.newFixedThreadPool(5);
+        pool = new ForkJoinPool(2);
 
         handler.loadCollection();
         out = new ByteArrayOutputStream();
