@@ -7,6 +7,7 @@ import сommands.Command;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * The type Main.
@@ -23,7 +24,7 @@ public class Main {
      * @throws IOException the io exception
      */
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, SQLException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, SQLException, ExecutionException {
 
         Handler handler = new Handler();
         String mode = handler.readLineWithMessage("Режим", false).toLowerCase();
