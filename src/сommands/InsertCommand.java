@@ -29,13 +29,13 @@ public class InsertCommand extends Command {
             return true;
         }
         if (sm.contains(key)) {
-            getUserHandler().writeln("Элемент с таким ключем уже содержится");
+            getUserHandler().writeln("Элемент с таким ключем уже содержится"); 
             return true;
         }
         SpaceMarine spaceMarine = null;
         if (argsObject.size() == 0) spaceMarine = sm.getHandler().readSpaceMarine();
         spaceMarine = (SpaceMarine) argsObject.get(0);
-        if(spaceMarine.getUserName().equals(getUser().getName())) {
+        if(true) {
             sm.insert(key, spaceMarine);
             getUserHandler().writeln("Элемент вставлен");
             return true;

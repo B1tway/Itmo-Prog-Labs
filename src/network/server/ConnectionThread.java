@@ -53,7 +53,7 @@ public class ConnectionThread extends Thread {
 //            }
             String message = null;
             if(session.getRight() || cmd.getCommandName().equals("login") || cmd.getCommandName().equals("register")) {
-                ExecutorTask exe = new ExecutorTask(handler, cmd);
+                ExecutorTask exe = new ExecutorTask(handler, cmd, session.getUser());
                 Future<String> messageFuture = executorService.submit(exe);
                 try {
                     message = messageFuture.get();

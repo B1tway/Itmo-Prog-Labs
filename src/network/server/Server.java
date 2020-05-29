@@ -1,6 +1,5 @@
 package network.server;
 
-import network.client.Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Handler;
@@ -9,7 +8,9 @@ import сommands.Command;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 
 
 public class Server {
@@ -20,7 +21,7 @@ public class Server {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
     private OutputStream out;
-    private static  ExecutorService pool;
+    private static ExecutorService pool;
 
     public Server(Handler handler) throws IOException {
         setHandler(handler);
@@ -41,7 +42,7 @@ public class Server {
     private void startServer(int port) throws IOException {
         try {
             server = new ServerSocket(port);
-//            server.setSoTimeout(2000);
+            server.setSoTimeout(3000);
             running = true;
             logger.debug("Сервер запущен");
         } catch (IOException exp) {
@@ -58,10 +59,12 @@ public class Server {
     public void run(int port) throws IOException, ExecutionException, InterruptedException {
         startServer(port);
         Socket socket = null;
+        runCli();
         while (running) {
+
             try {
                 socket = server.accept();
-                new ConnectionThread(pool, socket,handler).start();
+                new ConnectionThread(pool, socket, handler).start();
                 logger.debug("Полезователь подключился");
 //                ClientWorker worker = new ClientWorker(handler,socket);
 //                pool.execute(worker);
@@ -69,8 +72,7 @@ public class Server {
 //                ExecutorTask executorTask = new ExecutorTask(socket, handler, cmd);
 //                pool.submit(executorTask);
             } catch (IOException exp) {
-                exp.printStackTrace();
-                runCli();
+
             }
 //            GetCommandTask task = new GetCommandTask(socket);
 //            Future<Command> cmdFuture = pool.submit(task);
@@ -79,13 +81,14 @@ public class Server {
 //            System.out.println(cmd.getCommandName());
 //            System.out.println(socket.isClosed());
 //            socket.close();
+
+
         }
 
     }
 
 
     private Command readCommand(Socket socket) throws IOException, ClassNotFoundException {
-
         Command cmd = (Command) objectInputStream.readObject();
         return cmd;
     }
@@ -119,10 +122,8 @@ public class Server {
     }
 
     private void runCli() throws IOException {
-//        handler.setPrintWriter(new PrintWriter(System.out));
-//        Command cmd = handler.nextCommand(4000);
-//        if (!handler.isEmptyInput()) executeCommand(cmd);
-//        handler.setPrintWriter(new PrintWriter(out));
+        System.out.println("\n");
+        new CliThread(handler).start();
     }
 
 
