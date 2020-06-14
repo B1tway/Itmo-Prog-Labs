@@ -3,18 +3,17 @@ package utils;
 import network.client.User;
 import сollection.SpaceMarine;
 import сollection.SpaceStorage;
-
 import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
 
 public class DataBaseManager {
-        private static final String DB_URL = "jdbc:postgresql://pg:5432/studs";
+//    private static final String DB_URL = "jdbc:postgresql://pg:5432/studs";
     private ObjectInputStream input;
     private ByteArrayInputStream byteInput;
     private ByteArrayOutputStream byteOutput;
     private ObjectOutputStream output;
-//    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+        private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static String USER = "postgres";
     private static String PASS = "argsf031";
     private static final String TABLE_NAME = "collection";
@@ -22,11 +21,12 @@ public class DataBaseManager {
     private Connection connection;
     private PassEncoder passEncoder;
     private String pepper = "af56a";
+
     static {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Введите логин и пароль");
-        USER = scanner.nextLine().trim();
-        PASS = scanner.nextLine().trim();
+//        USER = scanner.nextLine().trim();
+//        PASS = scanner.nextLine().trim();
         System.out.println("Connection to PostgreSQL JDBC");
         try {
             Class.forName("org.postgresql.Driver");
@@ -61,6 +61,7 @@ public class DataBaseManager {
     public DataBaseManager() throws IOException {
         this(DB_URL, USER, PASS);
     }
+
     public boolean addUser(User user) {
         String salt = new RandomStringGenerator().generate(6, 6);
         String hash = passEncoder.getHash(user.getPass() + salt);
@@ -77,6 +78,7 @@ public class DataBaseManager {
         }
 
     }
+
     public boolean containsUser(User user) {
         try {
             PreparedStatement statement = connection.prepareStatement("select * from " + USERS_TABLE + " where name = ?");
@@ -95,7 +97,8 @@ public class DataBaseManager {
             return false;
         }
     }
-//    String sqlInstallCommit =  "CREATE TABLE collection ( id bigint PRIMARY KEY, owner CHARACTER VARYING(40), marine BYTEA, key CHARACTER VARYING(50) ); CREATE TABLE users ( name CHARACTER VARYING(40) PRIMARY KEY, password CHARACTER VARYING(300), salt CHARACTER VARYING(20) ); CREATE SEQUENCE ids;";
+
+    //    String sqlInstallCommit =  "CREATE TABLE collection ( id bigint PRIMARY KEY, owner CHARACTER VARYING(40), marine BYTEA, key CHARACTER VARYING(50) ); CREATE TABLE users ( name CHARACTER VARYING(40) PRIMARY KEY, password CHARACTER VARYING(300), salt CHARACTER VARYING(20) ); CREATE SEQUENCE ids;";
     public Connection getConnection() {
         return connection;
     }
@@ -108,7 +111,7 @@ public class DataBaseManager {
             byte[] bytes = mariteToBytes(marine);
             PreparedStatement statement = connection.prepareStatement("insert into " + TABLE_NAME + " values (?, ?, ?, ?)");
             statement.setInt(1, (int) id);
-            statement.setString(2,marine.getUserName());
+            statement.setString(2, marine.getUserName());
             statement.setBinaryStream(3, new ByteArrayInputStream(bytes), bytes.length);
             statement.setString(4, key);
             statement.execute();
@@ -121,9 +124,9 @@ public class DataBaseManager {
 
     }
 
-    public SpaceStorage getCollection()  {
+    public SpaceStorage getCollection() {
         SpaceStorage spaceStorage = new SpaceStorage();
-        try(PreparedStatement statement = connection.prepareStatement("select * from " + TABLE_NAME);) {
+        try (PreparedStatement statement = connection.prepareStatement("select * from " + TABLE_NAME);) {
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -136,11 +139,9 @@ public class DataBaseManager {
                 spaceStorage.put(key, marine);
 
             }
-        }
-        catch (SQLException | IOException | ClassNotFoundException exp) {
+        } catch (SQLException | IOException | ClassNotFoundException exp) {
             exp.printStackTrace();
-        }
-        catch (NullPointerException exp) {
+        } catch (NullPointerException exp) {
             System.out.println("БД не доступна");
             System.exit(0);
         }
@@ -172,7 +173,7 @@ public class DataBaseManager {
                     "update " + TABLE_NAME + " set marine=? where id = ?");
             byte[] bytes = mariteToBytes(marine);
             statement.setBinaryStream(1, new ByteArrayInputStream(bytes), bytes.length);
-            statement.setLong(2,id);
+            statement.setLong(2, id);
             statement.executeUpdate();
             return 1;
         } catch (SQLException | IOException e) {
@@ -194,6 +195,7 @@ public class DataBaseManager {
         SpaceMarine marine = (SpaceMarine) input.readObject();
         return marine;
     }
+
     public int remove(long id) {
         try {
             PreparedStatement statement = connection.prepareStatement("delete from " + TABLE_NAME + " where id=?");
@@ -204,10 +206,11 @@ public class DataBaseManager {
             return 0;
         }
     }
+
     public int removeByKey(String key) {
         try {
             PreparedStatement statement = connection.prepareStatement("delete from " + TABLE_NAME + " where key=?");
-            statement.setString(1,key);
+            statement.setString(1, key);
             return statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

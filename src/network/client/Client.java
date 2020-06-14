@@ -10,8 +10,7 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Arrays;
-
-public class Client {
+public class Client  {
     private Handler handler;
     private SocketChannel channel;
     private ByteBuffer buffer;
