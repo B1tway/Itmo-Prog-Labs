@@ -79,7 +79,7 @@ public class ConnectionThread extends Thread {
             }
             response.setUser(session.getUser());
             new SenderThread(socket, response,outputStream).start();
-            new UpdateThread(server).start();
+//            new UpdateThread(server).start();
         }
         logger.debug("Пользователь отключился");
     }

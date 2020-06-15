@@ -58,22 +58,8 @@ public class Client {
 
     public void run(String host, int port) throws IOException {
         connect(host, port);
-        while (!clientSocket.isClosed()) {
-            try {
-
-//                Response response = (Response) inputStream.readObject();
-//                handler.writeln(new String(response.getData()));
-            } catch (IOException exp) {
-                exp.printStackTrace();
-                System.out.println("Соединение потеряно");
-                System.exit(0);
-
-            } catch (NullPointerException exp) {
-                System.out.println("");
-            }
-            new AcceptingThread(this).start();
-
-        }
+        new SendingThread(this).start();
+        new AcceptingThread(this).start();
     }
 
     public ObjectOutputStream getOutputStream() {
