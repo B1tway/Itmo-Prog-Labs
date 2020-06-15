@@ -6,7 +6,6 @@ import сollection.SpaceStorage;
 import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
-
 public class DataBaseManager {
 //    private static final String DB_URL = "jdbc:postgresql://pg:5432/studs";
     private ObjectInputStream input;

@@ -3,11 +3,16 @@ package network.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Handler;
+import сollection.SpaceStorage;
 import сommands.Command;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
@@ -22,11 +27,12 @@ public class Server {
     private ObjectInputStream objectInputStream;
     private OutputStream out;
     private static ExecutorService pool;
+    private List<Socket> sockets;
 
     public Server(Handler handler) throws IOException {
         setHandler(handler);
         pool = new ForkJoinPool(2);
-
+        sockets = new CopyOnWriteArrayList<>();
         handler.loadCollection();
         out = new ByteArrayOutputStream();
         logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -34,7 +40,6 @@ public class Server {
 
 
     }
-
     public void setHandler(Handler handler) {
         this.handler = handler;
     }
@@ -64,23 +69,13 @@ public class Server {
 
             try {
                 socket = server.accept();
-                new ConnectionThread(pool, socket, handler).start();
+                sockets.add(socket);
+                new ConnectionThread(this, pool, socket, handler).start();
                 logger.debug("Полезователь подключился");
-//                ClientWorker worker = new ClientWorker(handler,socket);
-//                pool.execute(worker);
-//                System.out.println(cmd.getCommandName());
-//                ExecutorTask executorTask = new ExecutorTask(socket, handler, cmd);
-//                pool.submit(executorTask);
+
             } catch (IOException exp) {
 
             }
-//            GetCommandTask task = new GetCommandTask(socket);
-//            Future<Command> cmdFuture = pool.submit(task);
-//            Command cmd = cmdFuture.get();
-//            cur = socket;
-//            System.out.println(cmd.getCommandName());
-//            System.out.println(socket.isClosed());
-//            socket.close();
 
 
         }
@@ -126,5 +121,11 @@ public class Server {
         new CliThread(handler).start();
     }
 
+    public SpaceStorage getStorage() {
+        return handler.getSpaceManager().getStorage();
+    }
 
+    public List<Socket> getSockets() {
+        return sockets;
+    }
 }

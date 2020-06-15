@@ -121,6 +121,10 @@ public class SpaceManager implements StorageManager {
                 });
     }
 
+    public SpaceStorage getStorage() {
+        return storage;
+    }
+
     /**
      * Remove.
      *

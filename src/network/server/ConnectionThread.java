@@ -7,6 +7,10 @@ import utils.Handler;
 import сommands.Command;
 import сommands.EmptyCommand;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -16,17 +20,24 @@ import java.util.concurrent.Future;
 public class ConnectionThread extends Thread {
     ExecutorService executorService;
     Socket socket;
+    private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
     Handler handler;
-
+    Server server;
     Logger logger;
     Session session;
-    public ConnectionThread(ExecutorService executorService, Socket socket, Handler handler) {
+    public ConnectionThread(Server server, ExecutorService executorService, Socket socket, Handler handler) throws IOException {
+        this.server = server;
         this.executorService = executorService;
         this.socket = socket;
         this.handler = handler;
+        outputStream = new ObjectOutputStream(socket.getOutputStream());
+        inputStream = new ObjectInputStream(socket.getInputStream());
+
         session = new Session();
         logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     }
+
 
     @Override
     public void run() {
@@ -44,14 +55,6 @@ public class ConnectionThread extends Thread {
             }
 
             logger.debug(cmd.getCommandName());
-//            OutputStream outputStream = new ByteArrayOutputStream();
-//            cmd.setCmdManager(handler.getCmdManeger());
-//            handler.setPrintWriter(new PrintWriter(outputStream));
-//            try {
-//                cmd.execute(cmd.getArgs());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             String message = null;
             if(session.getRight() || cmd.getCommandName().equals("login") || cmd.getCommandName().equals("register")) {
                 session.setUser(cmd.getUser());
@@ -75,11 +78,7 @@ public class ConnectionThread extends Thread {
             }
             response.setUser(session.getUser());
             new SenderThread(socket, response).start();
-//            Runnable task = new QueryTask(socket, handler);
-//            executorService.execute(task);
-
-//                ExecutorTask executorTask = new ExecutorTask(socket, handler, cmd);
-//                executorService.submit(executorTask);
+            new UpdateThread(server).start();
         }
         logger.debug("Пользователь отключился");
     }

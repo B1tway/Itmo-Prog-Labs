@@ -25,7 +25,6 @@ public class SenderThread extends Thread {
     }
 
     private void sendResponse(Socket socket, Response response) throws IOException {
-
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         objectOutputStream.writeObject(response);
     }

@@ -1,12 +1,13 @@
 package сollection;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 
 /**
  * The type Space storage.
  */
-public class SpaceStorage implements Storage<SpaceMarine> {
+public class SpaceStorage implements Storage<SpaceMarine>, Serializable {
     private TreeMap<String, SpaceMarine> spaceMap;
     private HashSet<Integer> ids;
     private Date date;
