@@ -30,6 +30,7 @@ public class SendingThread extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
 
 }

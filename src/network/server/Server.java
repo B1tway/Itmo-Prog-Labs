@@ -25,12 +25,12 @@ public class Server {
     private ObjectInputStream objectInputStream;
     private OutputStream out;
     private static ExecutorService pool;
-    private List<ObjectOutputStream> sockets;
+    private List<ConnectionThread> connections;
 
     public Server(Handler handler) throws IOException {
         setHandler(handler);
         pool = new ForkJoinPool(2);
-        sockets = new CopyOnWriteArrayList<>();
+        connections = new CopyOnWriteArrayList<>();
         handler.loadCollection();
         out = new ByteArrayOutputStream();
         logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -67,7 +67,9 @@ public class Server {
 
             try {
                 socket = server.accept();
-                new ConnectionThread(this, pool, socket, handler).start();
+                ConnectionThread connectionThread = new ConnectionThread(this, pool, socket, handler);
+                connections.add(connectionThread);
+                connectionThread.start();
                 logger.debug("Полезователь подключился");
 
             } catch (IOException exp) {
@@ -96,8 +98,8 @@ public class Server {
         cmd.setCmdManager(handler.getCmdManeger());
         cmd.execute(cmd.getArgs());
     }
-    public void addSocket(ObjectOutputStream socket) {
-        sockets.add(socket);
+    public void addSocket(ConnectionThread connectionThread) {
+        connections.add(connectionThread);
     }
 
     private void sendResponse(Socket socket, Response response) throws IOException {
@@ -125,7 +127,7 @@ public class Server {
         return handler.getSpaceManager().getStorage();
     }
 
-    public List<ObjectOutputStream> getSockets() {
-        return sockets;
+    public List<ConnectionThread> getConnections() {
+        return connections;
     }
 }

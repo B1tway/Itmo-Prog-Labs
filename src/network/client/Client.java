@@ -38,8 +38,9 @@ public class Client {
         handler.writeln("Try to connect");
         try {
             clientSocket = new Socket(InetAddress.getByName(host), port);
-            inputStream = new ObjectInputStream(clientSocket.getInputStream());
+
             outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+            inputStream = new ObjectInputStream(clientSocket.getInputStream());
             this.currentHost = host;
             this.currentPort = port;
             new AcceptingThread(this);
@@ -114,7 +115,9 @@ public class Client {
             System.exit(0);
         }
     }
-
+    public boolean autorization() {
+        return false;
+    }
     public User getUser() {
         return user;
     }

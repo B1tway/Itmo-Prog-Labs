@@ -1,3 +1,5 @@
+import javafx.application.Application;
+import javafx.stage.Stage;
 import network.client.Client;
 import network.server.Server;
 import utils.DataBaseManager;
@@ -12,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * The type Main.
  */
-public class Main {
+public class Main extends Application {
     public static String delEdges(String s) {
         return s.substring(1, s.length() - 1);
     }
@@ -47,10 +49,12 @@ public class Main {
                 server.run(port);
                 break;
             case ("client"):
-                String host = handler.readLineWithMessage("Введите host", false);
-                int portClient = handler.readInt("Введите порт",false);
+                String host = "localhost";
+                int portClient = 5555;
                 Client client = new Client(handler);
                 client.run(host,portClient);
+                Application.launch();
+
         }
 
 //        handler.getSpaceManager().getSortedCollection();
@@ -59,5 +63,11 @@ public class Main {
 //            handler.next();
 //        }
 
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        stage.setTitle("Hello world Application");
+        stage.show();
     }
 }

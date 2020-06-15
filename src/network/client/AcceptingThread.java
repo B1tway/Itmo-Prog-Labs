@@ -25,6 +25,7 @@ public class AcceptingThread extends Thread {
 
         while (!socket.isClosed()) {
             try {
+
                 response = (Response) in.readObject();
                 if (response.getStorage() == null) {
                     String message = new String(response.getData());
@@ -36,11 +37,9 @@ public class AcceptingThread extends Thread {
                     client.setStorage(response.getStorage());
                     client.getHandler().writeln(response.getStorage().size());
                 }
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                System.exit(0);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                return;
             }
         }
     }
