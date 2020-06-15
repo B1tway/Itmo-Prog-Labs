@@ -41,8 +41,9 @@ public class ConnectionThread extends Thread {
 
     @Override
     public void run() {
+        server.addSocket(outputStream);
         while (!socket.isClosed()) {
-            GetCommandTask task = new GetCommandTask(socket);
+            GetCommandTask task = new GetCommandTask(socket, inputStream);
             Future<Command> cmdFuture = executorService.submit(task);
             Command cmd = new EmptyCommand();
             if(cmd.getUser() != null) session.setUser(cmd.getUser());
@@ -77,7 +78,7 @@ public class ConnectionThread extends Thread {
                 session.setRight(true);
             }
             response.setUser(session.getUser());
-            new SenderThread(socket, response).start();
+            new SenderThread(socket, response,outputStream).start();
             new UpdateThread(server).start();
         }
         logger.debug("Пользователь отключился");

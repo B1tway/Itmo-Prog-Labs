@@ -10,6 +10,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Client {
     private Handler handler;
@@ -57,11 +58,11 @@ public class Client {
 
     public void run(String host, int port) throws IOException {
         connect(host, port);
-//        new AcceptingThread(this).start();
         while (!clientSocket.isClosed()) {
             try {
-                Command cmd = writeCommand();
-                outputStream.writeObject(cmd);
+
+//                Response response = (Response) inputStream.readObject();
+//                handler.writeln(new String(response.getData()));
             } catch (IOException exp) {
                 exp.printStackTrace();
                 System.out.println("Соединение потеряно");
@@ -70,9 +71,13 @@ public class Client {
             } catch (NullPointerException exp) {
                 System.out.println("");
             }
-
+            new AcceptingThread(this).start();
 
         }
+    }
+
+    public ObjectOutputStream getOutputStream() {
+        return outputStream;
     }
 
     public void setUser(User user) {
@@ -100,20 +105,10 @@ public class Client {
         Response response = (Response) inputStream.readObject();
         return response;
     }
-
-    private Command writeCommand() throws IOException {
-        Command cmd = handler.nextCommand();
-        if (user != null) cmd.setUser(user);
-        if (cmd.getCommandName().equals("exit")) {
-            System.out.println("Завершение работы");
-            System.exit(0);
-        }
-        if (cmd.getCommandName().equals("save")) {
-            System.out.println("Команда не доступна пользователя");
-            cmd = new EmptyCommand();
-        }
-        return cmd;
+    public ObjectInputStream getInputStream() {
+        return inputStream;
     }
+
 
     private String parseServerAnswer(Response response) throws IOException, ClassNotFoundException {
         return new String(response.getData());
@@ -132,5 +127,9 @@ public class Client {
             System.out.println("Сервер не отвечает");
             System.exit(0);
         }
+    }
+
+    public User getUser() {
+        return user;
     }
 }

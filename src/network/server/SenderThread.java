@@ -8,15 +8,19 @@ import java.net.SocketException;
 public class SenderThread extends Thread {
     private Socket socket;
     private Response response;
-    public SenderThread(Socket socket, Response response) {
+    private ObjectOutputStream output;
+    public SenderThread(Socket socket, Response response, ObjectOutputStream output) {
         this.socket = socket;
         this.response = response;
+        this.output = output;
     }
 
     @Override
     public void run() {
         try {
-            if (!socket.isClosed()) sendResponse(socket, response);
+            if (!socket.isClosed()) {
+                output.writeObject(response);
+            }
         } catch (IOException e) {
              e.printStackTrace();
         }

@@ -9,8 +9,6 @@ import сommands.Command;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
@@ -27,7 +25,7 @@ public class Server {
     private ObjectInputStream objectInputStream;
     private OutputStream out;
     private static ExecutorService pool;
-    private List<Socket> sockets;
+    private List<ObjectOutputStream> sockets;
 
     public Server(Handler handler) throws IOException {
         setHandler(handler);
@@ -69,7 +67,6 @@ public class Server {
 
             try {
                 socket = server.accept();
-                sockets.add(socket);
                 new ConnectionThread(this, pool, socket, handler).start();
                 logger.debug("Полезователь подключился");
 
@@ -99,6 +96,9 @@ public class Server {
         cmd.setCmdManager(handler.getCmdManeger());
         cmd.execute(cmd.getArgs());
     }
+    public void addSocket(ObjectOutputStream socket) {
+        sockets.add(socket);
+    }
 
     private void sendResponse(Socket socket, Response response) throws IOException {
         objectOutputStream.writeObject(response);
@@ -125,7 +125,7 @@ public class Server {
         return handler.getSpaceManager().getStorage();
     }
 
-    public List<Socket> getSockets() {
+    public List<ObjectOutputStream> getSockets() {
         return sockets;
     }
 }

@@ -6,22 +6,23 @@ import сommands.EmptyCommand;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.Callable;
 
 public class GetCommandTask implements Callable<Command> {
     final Socket socket;
-    public GetCommandTask(Socket socket) {
+    ObjectInputStream input;
+    public GetCommandTask(Socket socket, ObjectInputStream inputStream) {
         this.socket = socket;
+        this.input = inputStream;
     }
     @Override
     public Command call() throws IOException {
         Command cmd = new EmptyCommand();
         try {
-            InputStream socketInput = socket.getInputStream();
-            ObjectInputStream inputStream = new ObjectInputStream(socketInput);
-            cmd = (Command) inputStream.readObject();
+            cmd = (Command) input.readObject();
         } catch (IOException | ClassNotFoundException exp) {
             socket.close();
         }

@@ -16,6 +16,7 @@ public class AcceptingThread extends Thread {
     public AcceptingThread(Client client) throws IOException {
         this.client = client;
         this.socket = client.getClientSocket();
+        this.in = client.getInputStream();
     }
 
     @Override
@@ -24,9 +25,7 @@ public class AcceptingThread extends Thread {
 
         while (!socket.isClosed()) {
             try {
-                InputStream is = socket.getInputStream();
-                ObjectInputStream inputStream = new ObjectInputStream(is);
-                response = (Response) inputStream.readObject();
+                response = (Response) in.readObject();
                 if (response.getStorage() == null) {
                     String message = new String(response.getData());
                     if (message.equals("Вы успешно авторизовались\n")) {
@@ -39,6 +38,7 @@ public class AcceptingThread extends Thread {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                System.exit(0);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

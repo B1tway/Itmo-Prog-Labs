@@ -5,13 +5,14 @@ import сollection.SpaceStorage;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 public class UpdateThread extends Thread {
-    List<Socket> sockets;
+    List<ObjectOutputStream> sockets;
     Server server;
 
     public UpdateThread(Server server) {
@@ -21,15 +22,13 @@ public class UpdateThread extends Thread {
 
     @Override
     public void run() {
-        for (Socket socket : sockets) {
-            if (socket.isClosed()) {
-                sockets.remove(socket);
-                continue;
-            }
+        for (ObjectOutputStream socket : sockets) {
+
             try {
                 Response response = new Response(server.getStorage());
-                ObjectOutputStream objectOutputStream= new ObjectOutputStream(socket.getOutputStream());
-                objectOutputStream.writeObject(response);
+                socket.writeObject(response);
+            } catch (SocketException exp) {
+                sockets.remove(socket);
             } catch (IOException e) {
                 e.printStackTrace();
             }
