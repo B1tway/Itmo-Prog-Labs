@@ -14,6 +14,7 @@ public class InsertCommand extends Command {
      */
     public InsertCommand() {
         super("insert", "добавить новый элемент с заданным ключом");
+        setInput(true);
     }
 
 
@@ -45,11 +46,17 @@ public class InsertCommand extends Command {
     }
 
     @Override
-    public void readArgs() {
+    public void readArgs() throws IOException {
         argsObject.clear();
-        SpaceMarine marine = getUserHandler().readSpaceMarine();
-        if (user != null) marine.setUser(getUser().getName());
-        argsObject.add(marine);
+        SpaceMarine marine = null;
+        if (getUserHandler().getClient().getController() == null) {
+            marine = getUserHandler().readSpaceMarine();
+            if (user != null) marine.setUser(getUser().getName());
+            argsObject.add(marine);
+        } else {
+            getUserHandler().getClient().getController().inputSpaceMarine(this);
+        }
+
 
     }
 }

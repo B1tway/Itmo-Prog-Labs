@@ -32,10 +32,15 @@ public class AcceptingThread extends Thread {
                         client.setUser(response.getUser());
                     }
                     client.getHandler().writeln(message);
+                    if (client.getController()!=null)
+                    client.getController().printMessage(message);
                 } else {
                     System.out.println(response.getStorage().size());
+
                     client.setStorage(response.getStorage());
                     client.getHandler().getSpaceManager().setStorage(response.getStorage());
+                    if(client.getController() != null)
+                    client.getController().setTable();
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

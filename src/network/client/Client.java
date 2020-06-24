@@ -31,10 +31,15 @@ public class Client {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private SendingThread sender;
+
+    public MainSceneController getController() {
+        return controller;
+    }
     public Client(Handler handler) {
         buffer = ByteBuffer.allocate(2048);
         buffer.clear();
         setHandler(handler);
+        handler.setClient(this);
         storage = handler.getStorage();
 
     }
@@ -61,6 +66,8 @@ public class Client {
 
     }
     public void sendCommand(Command cmd) throws IOException {
+        if(user != null)
+        cmd.setUser(user);
         outputStream.reset();
         sender.sendCommand(cmd);
     }

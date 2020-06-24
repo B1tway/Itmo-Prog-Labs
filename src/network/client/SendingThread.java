@@ -26,6 +26,7 @@ public class SendingThread extends Thread {
         while (!socket.isClosed()) {
             try {
                 Command cmd = writeCommand();
+                System.out.println(0);
                 outputStream.reset();
                 outputStream.writeObject(cmd);
             } catch (IOException e) {

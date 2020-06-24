@@ -79,7 +79,7 @@ public class CommandManager {
         return new EmptyCommand();
     }
 
-    public Command getCommand(String cmdName, String[] args) {
+    public Command getCommand(String cmdName, String[] args) throws IOException {
         Command cmd = getCommand(cmdName);
         cmd.args = args;
         cmd.readArgs();

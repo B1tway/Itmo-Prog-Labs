@@ -6,9 +6,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="network.client.controllers.MainSceneController">
+<AnchorPane prefHeight="506.0" prefWidth="648.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="network.client.controllers.MainSceneController">
     <children>
-        <TableView fx:id="table" layoutX="23.0" layoutY="42.0" prefHeight="282.0" prefWidth="563.0">
+        <TableView fx:id="table" layoutX="23.0" layoutY="42.0" prefHeight="343.0" prefWidth="602.0">
             <columns>
                 <TableColumn fx:id="keyColumm" editable="false" prefWidth="109.60003662109375" text="name" />
                 <TableColumn fx:id="idColumn" editable="false" prefWidth="98.39996337890625" text="id" />
@@ -16,7 +16,7 @@
                 <TableColumn fx:id="ownerColumm" editable="false" prefWidth="191.99993896484375" text="owner" />
             </columns>
         </TableView>
-        <TextField fx:id="console" layoutX="25.0" layoutY="337.0" prefHeight="34.0" prefWidth="477.0" />
-        <Button fx:id="exucuteButton" layoutX="522.0" layoutY="337.0" mnemonicParsing="false" onAction="#executeCommand" prefHeight="34.0" prefWidth="70.0" text="execute" />
+      <TextField layoutX="50.0" layoutY="432.0" prefHeight="34.0" prefWidth="446.0" fx:id="console"/>
+      <Button layoutX="532.0" layoutY="436.0" mnemonicParsing="false" text="execute" fx:id="exucuteButton" onAction="#executeCommand"/>
     </children>
 </AnchorPane>

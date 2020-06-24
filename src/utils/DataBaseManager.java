@@ -266,5 +266,11 @@ public class DataBaseManager {
             return 0;
         }
     }
+    public  void createStreams() throws IOException {
+        byteOutput = new ByteArrayOutputStream();
+        byteInput = new ByteArrayInputStream(byteOutput.toByteArray());
+        output = new ObjectOutputStream(byteOutput);
+        input = new ObjectInputStream(byteInput);
+    }
 }
 

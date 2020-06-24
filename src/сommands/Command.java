@@ -28,6 +28,14 @@ public abstract class Command implements Serializable {
      */
     transient protected String helpText;
     protected User user;
+    public boolean input;
+
+    public void setInput(boolean input) {
+        this.input = input;
+    }
+    public boolean getInput() {
+        return input;
+    }
     /**
      * The Args count.
      */
@@ -42,6 +50,7 @@ public abstract class Command implements Serializable {
      */
     protected Command(String cmdName, String helpText) {
         this.cmdName = cmdName;
+        this.input = false;
         this.helpText = helpText;
         this.argsObject = new ArrayList<>();
     }
@@ -121,7 +130,7 @@ public abstract class Command implements Serializable {
         return helpText;
     }
 
-    public void readArgs() {
+    public void readArgs() throws IOException {
         return;
     }
 

@@ -1,6 +1,7 @@
 package utils;
 
 import exceptions.InvalidInputException;
+import network.client.Client;
 import network.client.User;
 import network.server.Session;
 import сollection.*;
@@ -29,6 +30,7 @@ public class Handler {
     private boolean interactive = true;
     private int stackSize = 1000;
     private Set<String> files;
+    private Client client;
     private boolean isEmptyInput = false;
     private DataBaseManager dataBaseManager;
     public void setDataBaseManager(DataBaseManager dataBaseManager) {
@@ -37,6 +39,14 @@ public class Handler {
 
     public DataBaseManager getDataBaseManager() {
         return dataBaseManager;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     /**

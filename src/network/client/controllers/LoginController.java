@@ -77,12 +77,13 @@ public class LoginController implements Controller {
         main.setLocation(getClass().getResource("/res/mainscene.fxml"));
         Parent mainRoot = main.load();
         MainSceneController MainController = main.getController();
-        MainController.initialize();
+        client.setController(MainController);
+        MainController.setClient(client);
+//        MainController.initialize();
         MainController.setRoot(mainRoot);
         MainController.loadData(client);
         MainController.setTable();
-        MainController.setClient(client);
-        window.setScene(new Scene(mainRoot,600,400));
+        window.setScene(new Scene(mainRoot,800,600));
         MainController.setStage(window);
     }
 }
