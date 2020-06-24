@@ -51,5 +51,11 @@ public class Coordinates implements Serializable {
         return x + separator + y;
     }
 
+    public long getX() {
+        return x;
+    }
 
+    public Long getY() {
+        return y;
+    }
 }

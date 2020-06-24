@@ -3,16 +3,18 @@ package utils;
 import network.client.User;
 import сollection.SpaceMarine;
 import сollection.SpaceStorage;
+
 import java.io.*;
 import java.sql.*;
 import java.util.Scanner;
+
 public class DataBaseManager {
-//    private static final String DB_URL = "jdbc:postgresql://pg:5432/studs";
+    //    private static final String DB_URL = "jdbc:postgresql://pg:5432/studs";
     private ObjectInputStream input;
     private ByteArrayInputStream byteInput;
     private ByteArrayOutputStream byteOutput;
     private ObjectOutputStream output;
-        private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static String USER = "postgres";
     private static String PASS = "argsf031";
     private static final String TABLE_NAME = "collection";
@@ -123,6 +125,27 @@ public class DataBaseManager {
 
     }
 
+    public boolean insertSpaceMarine(String key, SpaceMarine marine, int id) {
+
+        try {
+
+            marine.setId((int) id);
+            byte[] bytes = mariteToBytes(marine);
+            PreparedStatement statement = connection.prepareStatement("insert into " + TABLE_NAME + " values (?, ?, ?, ?)");
+            statement.setInt(1, (int) id);
+            statement.setString(2, marine.getUserName());
+            statement.setBinaryStream(3, new ByteArrayInputStream(bytes), bytes.length);
+            statement.setString(4, key);
+            statement.execute();
+        } catch (SQLException | IOException exp) {
+            exp.printStackTrace();
+            System.out.println("Не удалось вставить элемент в базу данных");
+            return false;
+        }
+        return true;
+
+    }
+
     public SpaceStorage getCollection() {
         SpaceStorage spaceStorage = new SpaceStorage();
         try (PreparedStatement statement = connection.prepareStatement("select * from " + TABLE_NAME);) {
@@ -166,33 +189,60 @@ public class DataBaseManager {
         }
     }
 
-    public int update(long id, SpaceMarine marine) {
+    public boolean update(long id, String key, SpaceMarine marine)  {
+        try {
+            PreparedStatement statement = connection.prepareStatement("select from " + TABLE_NAME + " where id=?");
+            statement.setInt(1, (int) id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                removeByKey(key);
+                insertSpaceMarine(key, marine, (int) id);
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int update(long id, String key) {
         try {
             PreparedStatement statement = connection.prepareStatement(
-                    "update " + TABLE_NAME + " set marine=? where id = ?");
-            byte[] bytes = mariteToBytes(marine);
-            statement.setBinaryStream(1, new ByteArrayInputStream(bytes), bytes.length);
-            statement.setLong(2, id);
-            statement.executeUpdate();
+                    "update " + TABLE_NAME + " set key=? where id = ?");
+            statement.setString(1, key);
+            statement.setInt(2, (int) id);
+            statement.execute();
             return 1;
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
     }
 
     private byte[] mariteToBytes(SpaceMarine marine) throws IOException {
+        output = new ObjectOutputStream(byteOutput);
         output.writeObject(marine);
         byte[] bytes = byteOutput.toByteArray();
         output.flush();
+        output.reset();
+        byteOutput = new ByteArrayOutputStream();
         return bytes;
     }
 
     private SpaceMarine bytesToSpaceMarine(byte[] bytes) throws IOException, ClassNotFoundException {
         byteInput = new ByteArrayInputStream(bytes);
         input = new ObjectInputStream(byteInput);
-        SpaceMarine marine = (SpaceMarine) input.readObject();
-        return marine;
+        try {
+            SpaceMarine marine = (SpaceMarine) input.readObject();
+            return marine;
+        } catch (InvalidClassException exp) {
+            exp.printStackTrace();
+        }
+        catch (EOFException exp) {
+
+        }
+        return null;
     }
 
     public int remove(long id) {

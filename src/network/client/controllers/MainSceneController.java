@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import network.client.Client;
+import сommands.ClearCommand;
 import сommands.Command;
 
 import java.io.IOException;
@@ -50,14 +51,20 @@ public class MainSceneController implements Controller{
                     try {
                         FXMLLoader fxmlLoader = new FXMLLoader();
                         fxmlLoader.setLocation(getClass().getResource("/res/marinechangescreen.fxml"));
+                        Parent change = fxmlLoader.load();
+                        TableCell cell = row.getItem();
                         MarineChangeController changeController = fxmlLoader.getController();
-                        Scene scene = new Scene(fxmlLoader.load(), 900, 200);
-                        Stage stage = new Stage();
-                        stage.setTitle("New Window");
-                        stage.setScene(scene);
-                        stage.show();
+                        changeController.setMarine(cell.getSpaceMarine());
+                        changeController.loadMarine();
+                        Scene sceneChange = new Scene(change, 1000, 200);
+                        Stage stageChange = new Stage();
+                        stageChange.setTitle("New Window");
+                        stageChange.setScene(sceneChange);
+                        changeController.setClient(client);
+                        setStage(stageChange);
+                        stageChange.show();
                     } catch (IOException e) {
-
+                        e.printStackTrace();
                     }
                 }
             });
@@ -85,7 +92,8 @@ public class MainSceneController implements Controller{
 
     public void loadData(Client client)
     {
-        cells = client.getElements();
+        cells.removeAll();
+        cells.addAll(client.getElements());
     }
     public void loadData()
     {

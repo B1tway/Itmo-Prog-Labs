@@ -6,6 +6,7 @@ import сollection.SpaceManager;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +53,7 @@ public abstract class Command implements Serializable {
      * @return the boolean
      * @throws IOException the io exception
      */
-    public abstract boolean execute(String args[]) throws IOException;
+    public abstract boolean execute(String args[]) throws IOException, SQLException;
     public void setUser(String userName, String pass) {
         user = new User(userName, pass);
 
@@ -145,4 +146,16 @@ public abstract class Command implements Serializable {
                 ", argsObject=" + argsObject +
                 '}';
     }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
+    public void setArgsObject(List<Object> argsObject) {
+        this.argsObject = argsObject;
+    }
+    public void addObject(Object obj) {
+        argsObject.add(obj);
+    }
+
 }

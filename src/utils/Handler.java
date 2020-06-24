@@ -10,6 +10,7 @@ import сommands.EmptyCommand;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -72,7 +73,7 @@ public class Handler {
      * @return the boolean
      * @throws IOException the io exception
      */
-    public boolean next() throws IOException {
+    public boolean next() throws IOException, SQLException {
         if (interactive) write(">> ");
         String[] args = readCommand();
         if (args.length == 0) return true;
@@ -224,7 +225,7 @@ public class Handler {
         } while (!isCategory(input) && !(input == null));
         return result;
     }
-    public void execute(Command cmd) throws IOException {
+    public void execute(Command cmd) throws IOException, SQLException {
         cmd.setCmdManager(cmdManeger);
         cmd.execute(cmd.getArgs());
     }

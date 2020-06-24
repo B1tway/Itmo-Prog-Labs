@@ -9,6 +9,7 @@ import сommands.Command;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
@@ -94,7 +95,7 @@ public class Server {
         return cmd;
     }
 
-    private void executeCommand(Command cmd) throws IOException {
+    private void executeCommand(Command cmd) throws IOException, SQLException {
         cmd.setCmdManager(handler.getCmdManeger());
         cmd.execute(cmd.getArgs());
     }

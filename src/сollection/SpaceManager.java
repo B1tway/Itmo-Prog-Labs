@@ -3,6 +3,7 @@ package сollection;
 import network.client.User;
 import utils.Handler;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,9 +90,10 @@ public class SpaceManager implements StorageManager {
 
 
     @Override
-    public void update(int id, SpaceMarine spaceMarine) {
-        if (handler.getDataBaseManager().update(id, spaceMarine) > 0) {
-            String key = findKey(findById(id));
+    public void update(int id, SpaceMarine spaceMarine) throws SQLException {
+        String key = findKey(findById(id));
+        if (handler.getDataBaseManager().update(id, key, spaceMarine)) {
+
             spaceMarine.setId(id);
             storage.put(key, spaceMarine);
         }

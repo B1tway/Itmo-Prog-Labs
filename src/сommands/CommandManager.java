@@ -4,6 +4,7 @@ package сommands;
 import utils.Handler;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 /**
@@ -92,7 +93,7 @@ public class CommandManager {
      * @param args    the args
      * @throws IOException the io exception
      */
-    public boolean executeCommand(String cmdName, String[] args) throws IOException {
+    public boolean executeCommand(String cmdName, String[] args) throws IOException, SQLException {
         return getCommand(cmdName).execute(args);
     }
 

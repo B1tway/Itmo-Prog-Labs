@@ -6,6 +6,7 @@ import сommands.Command;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 public class CliThread extends Thread {
     Handler handler;
@@ -28,6 +29,8 @@ public class CliThread extends Thread {
             } catch (IndexOutOfBoundsException exp) {
                 return;
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
             handler.setInteractive(true);

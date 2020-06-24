@@ -4,6 +4,7 @@ import сollection.SpaceManager;
 import сollection.SpaceMarine;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * The type Update command.
@@ -17,7 +18,7 @@ public class UpdateCommand extends Command {
     }
 
     @Override
-    public boolean execute(String[] args) throws IOException {
+    public boolean execute(String[] args) throws IOException, SQLException {
         SpaceManager sm = getCollectionManager();
         int id = 0;
         try {
@@ -32,7 +33,7 @@ public class UpdateCommand extends Command {
         }
         SpaceMarine marine = (SpaceMarine) argsObject.get(0);
         if(marine.getUserName().equals(getUser().getName())) {
-            sm.update(id, marine);
+            sm.update(id,marine);
             getUserHandler().writeln("Обьект обновлен");
             return true;
         }

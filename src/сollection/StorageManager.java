@@ -1,6 +1,7 @@
 package сollection;
 
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public interface StorageManager {
      * @param id          the id
      * @param spaceMarine the space marine
      */
-    void update(int id, SpaceMarine spaceMarine);
+    void update(int id, SpaceMarine spaceMarine) throws SQLException;
 
     /**
      * Save.

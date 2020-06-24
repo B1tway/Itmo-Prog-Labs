@@ -58,5 +58,19 @@ public class Chapter implements Comparable<Chapter>, Serializable {
         return name + sepator + parentLegion + sepator + world + sepator + cnt;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public Integer getMarinesCount() {
+        return marinesCount;
+    }
+
+    public String getParentLegion() {
+        return parentLegion;
+    }
+
+    public String getWorld() {
+        return world;
+    }
 }

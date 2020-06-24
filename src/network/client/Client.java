@@ -61,6 +61,7 @@ public class Client {
 
     }
     public void sendCommand(Command cmd) throws IOException {
+        outputStream.reset();
         sender.sendCommand(cmd);
     }
     public Handler getHandler() {
