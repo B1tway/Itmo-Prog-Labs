@@ -26,7 +26,7 @@ public class GetCommandTask implements Callable<Command> {
         } catch (IOException | ClassNotFoundException exp) {
             socket.close();
         }
-
+        System.out.println(cmd.toString());
         return cmd;
     }
 }

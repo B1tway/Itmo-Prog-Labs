@@ -25,6 +25,7 @@ public class SenderThread extends Thread {
             if (!socket.isClosed()) {
                 ReentrantLock lock = new ReentrantLock();
                 lock.lock();
+                output.reset();
                 output.writeObject(response);
                 sendToAll();
                 output.flush();
@@ -41,13 +42,13 @@ public class SenderThread extends Thread {
 
     private void sendToAll() throws IOException {
         Response response = new Response(server.getStorage());
-//        Response response = new Response(server.getStorage());
         for (ConnectionThread thread : server.getConnections()) {
             if (!thread.isAlive()) {
                 server.getConnections().remove(thread);
                 continue;
             }
             thread.outputStream.writeObject(response);
+            thread.outputStream.reset();
         }
     }
 }

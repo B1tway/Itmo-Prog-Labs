@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="193.0" prefWidth="871.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="network.client.controllers.MarineChangeController">
+   <children>
+      <TableView layoutX="5.0" layoutY="22.0" prefHeight="122.0" prefWidth="852.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="name" />
+          <TableColumn prefWidth="99.20001220703125" text="Coordinates">
+               <columns>
+                  <TableColumn prefWidth="75.0" text="X" />
+                  <TableColumn prefWidth="75.0" text="Y" />
+               </columns>
+            </TableColumn>
+            <TableColumn prefWidth="75.0" text="health" />
+            <TableColumn prefWidth="75.0" text="category" />
+            <TableColumn prefWidth="75.0" text="Weapon" />
+            <TableColumn prefWidth="99.20001220703125" text="meleeWeapon" />
+            <TableColumn prefWidth="355.20000000000005" text="Chapter">
+               <columns>
+                  <TableColumn prefWidth="75.0" text="name" />
+                  <TableColumn prefWidth="94.39996337890625" text="parentLegion" />
+                  <TableColumn prefWidth="56.0" text="count" />
+                  <TableColumn prefWidth="75.0" text="world" />
+               </columns>
+            </TableColumn>
+        </columns>
+      </TableView>
+      <Button layoutX="284.0" layoutY="154.0" mnemonicParsing="false" text="update" />
+      <Button layoutX="495.0" layoutY="154.0" mnemonicParsing="false" text="cancel" />
+   </children>
+</AnchorPane>

@@ -25,7 +25,6 @@ public class AcceptingThread extends Thread {
 
         while (!socket.isClosed()) {
             try {
-
                 response = (Response) in.readObject();
                 if (response.getStorage() == null) {
                     String message = new String(response.getData());
@@ -34,6 +33,7 @@ public class AcceptingThread extends Thread {
                     }
                     client.getHandler().writeln(message);
                 } else {
+                    System.out.println(response.getStorage().size());
                     client.setStorage(response.getStorage());
                     client.getHandler().getSpaceManager().setStorage(response.getStorage());
                 }

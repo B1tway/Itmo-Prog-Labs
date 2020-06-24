@@ -1,9 +1,7 @@
 package сollection;
 
 import network.client.User;
-import network.server.Session;
 import utils.Handler;
-import сommands.Command;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +16,7 @@ public class SpaceManager implements StorageManager {
     private Handler handler;
 
     private User currentUser;
+
     /**
      * Instantiates a new Space manager.
      *
@@ -43,9 +42,10 @@ public class SpaceManager implements StorageManager {
      *
      * @return the user handler
      */
-    public  void setCurUser(User user){
+    public void setCurUser(User user) {
         this.currentUser = user;
     }
+
     public Handler getHandler() {
         return handler;
     }
@@ -72,7 +72,10 @@ public class SpaceManager implements StorageManager {
      * Clear.
      */
     public void clear() {
-        storage.clear();
+        SpaceMarine[] marines = getMarines();
+        for (SpaceMarine marine: marines) {
+            remove(findKey(marine));
+        }
     }
 
     @Override
@@ -87,10 +90,10 @@ public class SpaceManager implements StorageManager {
 
     @Override
     public void update(int id, SpaceMarine spaceMarine) {
-        if(handler.getDataBaseManager().update(id,spaceMarine) > 0) {
+        if (handler.getDataBaseManager().update(id, spaceMarine) > 0) {
             String key = findKey(findById(id));
             spaceMarine.setId(id);
-            storage.put(key,spaceMarine);
+            storage.put(key, spaceMarine);
         }
     }
 
@@ -132,22 +135,24 @@ public class SpaceManager implements StorageManager {
      */
     public void remove(String key) {
         String owner = findOwner(key);
-        if(owner.equals("-")) {
+        if (owner.equals("-")) {
             handler.writeln("Обьект c таким ключем не существует");
             return;
         }
         String user = getCurrentUser().getName();
-        if(handler.getDataBaseManager().removeByKey(key) > 0 && user.equals(owner)) {
+        if (handler.getDataBaseManager().removeByKey(key) > 0 && user.equals(owner)) {
             storage.remove(key);
             handler.writeln("Обьект успешно удален");
             return;
         }
         handler.writeln("Это не ваш обьект");
     }
+
     public void remove(String key, String userName) {
-        if( findOwner(key).equals(userName) && handler.getDataBaseManager().removeByKey(key) > 0)
+        if (findOwner(key).equals(userName) && handler.getDataBaseManager().removeByKey(key) > 0)
             storage.remove(key);
     }
+
     @Override
     public boolean removeLowerKey(String key) {
         storage.toKeyStream().filter(x -> x.compareTo(key) < 0).forEach(this::remove);
@@ -223,9 +228,9 @@ public class SpaceManager implements StorageManager {
      */
     public void insert(String key, SpaceMarine spaceMarine) {
         spaceMarine.setUser(currentUser.getName());
-        if(handler.getDataBaseManager().insertSpaceMarine(key,spaceMarine))
-        storage.put(key, spaceMarine);
-        storage.update();
+        if (handler.getDataBaseManager().insertSpaceMarine(key, spaceMarine))
+            storage.put(key, spaceMarine);
+//        storage.update();
     }
 
     /**
@@ -236,16 +241,19 @@ public class SpaceManager implements StorageManager {
     public SpaceMarine[] getMarines() {
         return storage.toArray();
     }
+
     public String findOwner(int id) {
         SpaceMarine marine = findById(id);
         if (marine != null) return findById(id).getUserName();
         return "-";
     }
+
     public String findOwner(String key) {
         SpaceMarine marine = storage.get(key);
-        if(marine != null) return marine.getUserName() == null? "" : storage.get(key).getUserName();
+        if (marine != null) return marine.getUserName() == null ? "" : storage.get(key).getUserName();
         return "-";
     }
+
     public User getCurrentUser() {
         return currentUser;
     }

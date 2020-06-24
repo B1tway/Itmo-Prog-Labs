@@ -1,7 +1,10 @@
 package network.client;
 
+import ch.qos.logback.classic.boolex.GEventEvaluator;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import network.client.controllers.MainSceneController;
 import network.client.controllers.TableCell;
 import network.server.Response;
 import network.server.SenderThread;
@@ -18,6 +21,7 @@ import java.nio.ByteBuffer;
 
 public class Client {
     private Handler handler;
+    private MainSceneController controller;
     private ByteBuffer buffer;
     private String currentHost;
     private int currentPort;
@@ -81,14 +85,21 @@ public class Client {
     public void setHandler(Handler handler) {
         this.handler = handler;
     }
-
+    public void setController(MainSceneController controller) {
+        this.controller = controller;
+    }
 
     private void sendData(Command cmd) throws IOException {
         outputStream.writeObject(cmd);
     }
-
+    public void updateData() {
+        controller.loadData();
+        controller.setTable();
+    }
     public void setStorage(SpaceStorage storage) {
         this.storage = storage;
+        if (controller!= null)
+        updateData();
     }
 
     public SpaceStorage getStorage() {
@@ -124,9 +135,6 @@ public class Client {
         }
     }
 
-    public boolean autorization() {
-        return false;
-    }
 
     public User getUser() {
         return user;

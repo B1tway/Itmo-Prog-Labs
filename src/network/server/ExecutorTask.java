@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ExecutorTask implements Callable<String> {
     Handler handler;
-    final Command cmd;
+    Command cmd;
     User user;
     public ExecutorTask(Handler handler, Command cmd, User user) {
         this.handler = handler;
@@ -30,6 +30,7 @@ public class ExecutorTask implements Callable<String> {
         ReentrantLock locker = new ReentrantLock();
         locker.lock();
         OutputStream outputStream = new ByteArrayOutputStream();
+        if(cmd.getArgs().length != 0) System.out.println(cmd.getArgs()[0]);
         cmd.setCmdManager(handler.getCmdManeger());
         handler.setUser(user);
 //        System.out.println(user.getName());

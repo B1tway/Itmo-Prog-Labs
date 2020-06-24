@@ -4,20 +4,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import network.client.Client;
+import сommands.Command;
 
+import java.io.IOException;
 import java.lang.ref.PhantomReference;
+import java.util.Scanner;
 
-public class MainSceneController {
+public class MainSceneController implements Controller{
     private Stage stage;
     private Parent root;
+    private Client client;
     ObservableList<TableCell> cells;
     @FXML
     private TableView<TableCell> table = new TableView<>();
@@ -40,6 +43,26 @@ public class MainSceneController {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         keyColumm.setCellValueFactory(new PropertyValueFactory<>("name"));
         ownerColumm.setCellValueFactory(new PropertyValueFactory<>("owner"));
+        table.setRowFactory( tv -> {
+            TableRow<TableCell> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    try {
+                        FXMLLoader fxmlLoader = new FXMLLoader();
+                        fxmlLoader.setLocation(getClass().getResource("/res/marinechangescreen.fxml"));
+                        MarineChangeController changeController = fxmlLoader.getController();
+                        Scene scene = new Scene(fxmlLoader.load(), 900, 200);
+                        Stage stage = new Stage();
+                        stage.setTitle("New Window");
+                        stage.setScene(scene);
+                        stage.show();
+                    } catch (IOException e) {
+
+                    }
+                }
+            });
+            return row ;
+        });
 
     }
 
@@ -47,16 +70,28 @@ public class MainSceneController {
         this.stage = stage;
     }
 
+    @Override
+    public void setWindow(Stage window) {
+        this.stage = window;
+    }
+
     public void setRoot(Parent root) {
         this.root = root;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public void loadData(Client client)
     {
         cells = client.getElements();
     }
+    public void loadData()
+    {
+        cells = client.getElements();
+    }
     public void setTable() {
-
         table.setItems(cells);
         table.refresh();
     }
@@ -64,8 +99,15 @@ public class MainSceneController {
         return console.getText();
     }
 
-    public void executeCommand(ActionEvent actionEvent) {
-
+    public void executeCommand(ActionEvent actionEvent) throws IOException {
+        client.getHandler().setScanner(new Scanner(getCmdText()));
+        try {
+            Command cmd = client.getHandler().nextCommand();
+            client.sendCommand(cmd);
+            client.getHandler().setScanner(new Scanner(System.in));
+        } catch (IOException exp) {
+            System.out.println("kek");
+        }
 
     }
 }

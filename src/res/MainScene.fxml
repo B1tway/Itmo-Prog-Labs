@@ -8,15 +8,15 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="network.client.controllers.MainSceneController">
     <children>
-        <TableView layoutX="23.0" layoutY="42.0" prefHeight="282.0" prefWidth="563.0" fx:id="table">
+        <TableView fx:id="table" layoutX="23.0" layoutY="42.0" prefHeight="282.0" prefWidth="563.0">
             <columns>
-                <TableColumn editable="false" prefWidth="109.60003662109375" text="key" fx:id="keyColumm"/>
-                <TableColumn editable="false" prefWidth="98.39996337890625" text="id" fx:id="idColumn"/>
-                <TableColumn prefWidth="163.20001220703125" text="name" fx:id="nameColumm"/>
-                <TableColumn editable="false" prefWidth="191.99993896484375" text="owner" fx:id="ownerColumm"/>
+                <TableColumn fx:id="keyColumm" editable="false" prefWidth="109.60003662109375" text="name" />
+                <TableColumn fx:id="idColumn" editable="false" prefWidth="98.39996337890625" text="id" />
+                <TableColumn fx:id="nameColumm" prefWidth="163.20001220703125" text="key" />
+                <TableColumn fx:id="ownerColumm" editable="false" prefWidth="191.99993896484375" text="owner" />
             </columns>
         </TableView>
-        <TextField layoutX="25.0" layoutY="337.0" prefHeight="34.0" prefWidth="477.0" fx:id="console" />
-        <Button layoutX="522.0" layoutY="337.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="70.0" text="execute" fx:id="exucuteButton" onAction="#executeCommand" />
+        <TextField fx:id="console" layoutX="25.0" layoutY="337.0" prefHeight="34.0" prefWidth="477.0" />
+        <Button fx:id="exucuteButton" layoutX="522.0" layoutY="337.0" mnemonicParsing="false" onAction="#executeCommand" prefHeight="34.0" prefWidth="70.0" text="execute" />
     </children>
 </AnchorPane>

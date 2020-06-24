@@ -104,6 +104,7 @@ public class Handler {
         if (args.length == 0) return new EmptyCommand();
         String cmd = args[0];
         args = Arrays.copyOfRange(args, 1, args.length);
+        cmdManeger.getCommand(cmd, args).clearAll();
         return cmdManeger.getCommand(cmd, args);
     }
 
@@ -127,7 +128,6 @@ public class Handler {
 
         } catch (NoSuchElementException exp) {
             System.out.println("Bye bye");
-            System.exit(0);
 
         }
 

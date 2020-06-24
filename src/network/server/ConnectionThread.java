@@ -43,6 +43,11 @@ public class ConnectionThread extends Thread {
     public void run() {
         new SenderThread(server, socket, new Response(handler.getStorage()), outputStream).start();
         while (!socket.isClosed()) {
+            try {
+                outputStream.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             GetCommandTask task = new GetCommandTask(socket, inputStream);
             Future<Command> cmdFuture = executorService.submit(task);
             Command cmd = new EmptyCommand();

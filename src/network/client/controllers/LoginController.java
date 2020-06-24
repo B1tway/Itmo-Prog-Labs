@@ -17,7 +17,7 @@ import сommands.ShowCommand;
 
 import java.io.IOException;
 
-public class LoginController {
+public class LoginController implements Controller {
     private Client client;
     private Parent root;
     private Stage window;
@@ -49,7 +49,7 @@ public class LoginController {
         String password =getPassword();
         cmd.setUser(getLogin(), getPassword());
         client.sendCommand(cmd);
-        Thread.sleep(100);
+        Thread.sleep(250);
         if (client.isLogin()) {
            changeScene();
         }
@@ -59,7 +59,7 @@ public class LoginController {
         Command cmd = client.getHandler().getCmdManeger().getCommand("register");
         cmd.setUser(getLogin(), getPassword());
         client.sendCommand(cmd);
-        Thread.sleep(100);
+        Thread.sleep(250);
         if (client.isLogin()) {
            changeScene();
         }
@@ -78,9 +78,10 @@ public class LoginController {
         Parent mainRoot = main.load();
         MainSceneController MainController = main.getController();
         MainController.initialize();
-        setRoot(mainRoot);
+        MainController.setRoot(mainRoot);
         MainController.loadData(client);
         MainController.setTable();
+        MainController.setClient(client);
         window.setScene(new Scene(mainRoot,600,400));
         MainController.setStage(window);
     }
