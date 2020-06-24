@@ -48,4 +48,7 @@ public class SendingThread extends Thread {
         }
         return cmd;
     }
+    public void sendCommand(Command cmd) throws IOException {
+        outputStream.writeObject(cmd);
+    }
 }

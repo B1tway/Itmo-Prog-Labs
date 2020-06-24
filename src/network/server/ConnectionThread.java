@@ -41,6 +41,7 @@ public class ConnectionThread extends Thread {
 
     @Override
     public void run() {
+        new SenderThread(server, socket, new Response(handler.getStorage()), outputStream).start();
         while (!socket.isClosed()) {
             GetCommandTask task = new GetCommandTask(socket, inputStream);
             Future<Command> cmdFuture = executorService.submit(task);

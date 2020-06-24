@@ -27,4 +27,7 @@ public class RegisterCommand extends Command {
         String password = getUserHandler().readLineWithMessage("Введите password", false);
         setUser(userName, password);
     }
+    public void setArgs(String userName, String password) {
+        setUser(userName, password);
+    }
 }

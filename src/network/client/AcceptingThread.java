@@ -35,7 +35,7 @@ public class AcceptingThread extends Thread {
                     client.getHandler().writeln(message);
                 } else {
                     client.setStorage(response.getStorage());
-                    client.getHandler().writeln(response.getStorage().size());
+                    client.getHandler().getSpaceManager().setStorage(response.getStorage());
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

@@ -136,7 +136,12 @@ public class Handler {
         return args;
 
     }
-
+    public void setStorage(SpaceStorage storage) {
+        getSpaceManager().setStorage(storage);
+    }
+    public SpaceStorage getStorage() {
+        return getSpaceManager().getStorage();
+    }
     public String[] readCommand(long time) {
         isEmptyInput = false;
         List<String> list = new ArrayList<>();

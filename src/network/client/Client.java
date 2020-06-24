@@ -1,16 +1,20 @@
 package network.client;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import network.client.controllers.TableCell;
 import network.server.Response;
+import network.server.SenderThread;
 import utils.Handler;
+import сollection.SpaceMarine;
 import сollection.SpaceStorage;
 import сommands.Command;
-import сommands.EmptyCommand;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Client {
     private Handler handler;
@@ -22,11 +26,12 @@ public class Client {
     private SpaceStorage storage;
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
+    private SendingThread sender;
     public Client(Handler handler) {
         buffer = ByteBuffer.allocate(2048);
         buffer.clear();
         setHandler(handler);
-        CollesionDetection detection = new CollesionDetection();
+        storage = handler.getStorage();
 
     }
 
@@ -38,7 +43,6 @@ public class Client {
         handler.writeln("Try to connect");
         try {
             clientSocket = new Socket(InetAddress.getByName(host), port);
-
             outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             inputStream = new ObjectInputStream(clientSocket.getInputStream());
             this.currentHost = host;
@@ -52,14 +56,17 @@ public class Client {
 
 
     }
-
+    public void sendCommand(Command cmd) throws IOException {
+        sender.sendCommand(cmd);
+    }
     public Handler getHandler() {
         return handler;
     }
 
     public void run(String host, int port) throws IOException {
         connect(host, port);
-        new SendingThread(this).start();
+        sender = new SendingThread(this);
+        sender.start();
         new AcceptingThread(this).start();
     }
 
@@ -77,7 +84,7 @@ public class Client {
 
 
     private void sendData(Command cmd) throws IOException {
-       outputStream.writeObject(cmd);
+        outputStream.writeObject(cmd);
     }
 
     public void setStorage(SpaceStorage storage) {
@@ -92,6 +99,7 @@ public class Client {
         Response response = (Response) inputStream.readObject();
         return response;
     }
+
     public ObjectInputStream getInputStream() {
         return inputStream;
     }
@@ -115,10 +123,26 @@ public class Client {
             System.exit(0);
         }
     }
+
     public boolean autorization() {
         return false;
     }
+
     public User getUser() {
         return user;
+    }
+
+    public ObservableList<TableCell> getElements() {
+        SpaceMarine[] marines = handler.getStorage().toArray();
+        ObservableList<TableCell> cells = FXCollections.observableArrayList();
+        for (SpaceMarine marine : marines) {
+            TableCell cell = new TableCell(handler.getSpaceManager().findKey(marine), marine);
+            cells.add(cell);
+        }
+        return cells;
+    }
+    public boolean isLogin() {
+        if(user == null) return false;
+        return true;
     }
 }
